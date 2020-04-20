@@ -4,6 +4,16 @@ import PropTypes from 'prop-types'
 import colors from '@/constants/colors'
 import BackButton from '@/components/BackButton'
 
+function RightButtonsProfile() {
+  return (
+    <View style={styles.rightButtons}>
+      <TouchableOpacity onPress={() => {}}>
+        <Text style={styles.buttonText}>Edit</Text>
+      </TouchableOpacity>
+    </View>
+  )
+}
+
 function RightButtonsSettings() {
   return (
     <View style={styles.rightButtons}>
@@ -31,6 +41,11 @@ export default function Header({ title, goBack, previous }) {
   let RightButtons
 
   switch (title) {
+    case 'Profile': {
+      RightButtons = RightButtonsProfile
+      break
+    }
+
     case 'Settings': {
       RightButtons = RightButtonsSettings
       break
