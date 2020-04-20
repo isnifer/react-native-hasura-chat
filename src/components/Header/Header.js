@@ -4,7 +4,44 @@ import PropTypes from 'prop-types'
 import colors from '@/constants/colors'
 import BackButton from '@/components/BackButton'
 
+function RightButtonsSettings() {
+  return (
+    <View style={styles.rightButtons}>
+      <TouchableOpacity onPress={() => {}}>
+        <Text style={styles.buttonText}>Reset</Text>
+      </TouchableOpacity>
+    </View>
+  )
+}
+
+function RightButtonsChats() {
+  return (
+    <View style={styles.rightButtons}>
+      <TouchableOpacity onPress={() => {}}>
+        <Image source={require('./img/person.png')} />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => {}} style={styles.buttonSearch}>
+        <Image source={require('./img/search.png')} />
+      </TouchableOpacity>
+    </View>
+  )
+}
+
 export default function Header({ title, goBack, previous }) {
+  let RightButtons
+
+  switch (title) {
+    case 'Settings': {
+      RightButtons = RightButtonsSettings
+      break
+    }
+
+    default: {
+      RightButtons = RightButtonsChats
+      break
+    }
+  }
+
   return (
     <SafeAreaView style={styles.root}>
       <View style={styles.container}>
@@ -12,14 +49,7 @@ export default function Header({ title, goBack, previous }) {
           {!!previous && <BackButton goBack={goBack} />}
           <Text style={[styles.title, previous && styles.titleInner]}>{title}</Text>
         </View>
-        <View style={styles.rightButtons}>
-          <TouchableOpacity onPress={() => {}}>
-            <Image source={require('./img/person.png')} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => {}} style={styles.buttonSearch}>
-            <Image source={require('./img/search.png')} />
-          </TouchableOpacity>
-        </View>
+        <RightButtons />
       </View>
     </SafeAreaView>
   )
@@ -27,12 +57,16 @@ export default function Header({ title, goBack, previous }) {
 
 Header.propTypes = {
   title: PropTypes.string.isRequired,
+  // options: PropTypes.object.isRequired,
   goBack: PropTypes.func.isRequired,
+  // routeName: PropTypes.string.isRequired,
   previous: PropTypes.object,
+  // routeParams: PropTypes.object,
 }
 
 Header.defaultProps = {
   previous: null,
+  // routeParams: {},
 }
 
 const styles = StyleSheet.create({
@@ -49,7 +83,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 34,
     fontWeight: 'bold',
-    color: '#ffffff',
+    color: colors.text,
+  },
+  titleSmall: {
+    fontSize: 16,
+    fontWeight: '500',
   },
   titleInner: {
     marginLeft: 10,
@@ -64,5 +102,10 @@ const styles = StyleSheet.create({
   },
   buttonSearch: {
     marginLeft: 20,
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: colors.text,
   },
 })

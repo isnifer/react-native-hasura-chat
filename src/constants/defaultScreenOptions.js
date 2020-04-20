@@ -7,6 +7,15 @@ export default {
     const { options } = scene.descriptor
     const title = getHeaderTitle({ options, scene })
 
-    return <Header title={title} previous={previous} goBack={navigation.goBack} />
+    return (
+      <Header
+        title={title}
+        options={options}
+        previous={previous}
+        goBack={navigation.goBack}
+        routeName={scene.route.name}
+        routeParams={scene.route.params}
+      />
+    )
   },
 }

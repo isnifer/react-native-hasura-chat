@@ -44,7 +44,11 @@ export default function Home({ route }) {
   }
 
   if (loading) {
-    return <Spinner flex />
+    return (
+      <View style={styles.container}>
+        <Spinner flex />
+      </View>
+    )
   }
 
   if (error) {

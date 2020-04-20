@@ -14,50 +14,55 @@ import Search from './Search'
 const Stack = createStackNavigator()
 const Tab = createBottomTabNavigator()
 
+const icons = {
+  'Home.Chats': require('@/assets/img/Home.png'),
+  'Home.Profile': require('@/assets/img/Profile.png'),
+  'Home.Settings': require('@/assets/img/Settings.png'),
+}
+
+const tabBarOptions = {
+  activeTintColor: colors.accent,
+  showLabel: false,
+  tabStyle: { backgroundColor: colors.primary },
+}
+
+const screenOptions = ({ route }) => ({
+  tabBarIcon: ({ focused }) => (
+    <Image
+      source={icons[route.name]}
+      style={{ tintColor: focused ? colors.accent : colors.textSecondary }}
+    />
+  ),
+})
+
+function HomeTabs() {
+  return (
+    <Tab.Navigator
+      initialRouteName="Home.Chats"
+      screenOptions={screenOptions}
+      tabBarOptions={tabBarOptions}>
+      <Tab.Screen name="Home.Profile" component={Profile} />
+      <Tab.Screen name="Home.Chats" component={Home} />
+      <Tab.Screen name="Home.Settings" component={Settings} />
+    </Tab.Navigator>
+  )
+}
+
 export default function App() {
   return (
     <NavigationContainer>
       <StatusBar barStyle="light-content" />
-      <Stack.Navigator initialRouteName="All Chats" screenOptions={defaultScreenOptions}>
-        <Stack.Screen name="All Chats">
-          {() => (
-            <Tab.Navigator
-              initialRouteName="All Chats"
-              screenOptions={({ route }) => ({
-                tabBarIcon: ({ focused }) => {
-                  const icons = {
-                    'All Chats': require('@/assets/img/Home.png'),
-                    Profile: require('@/assets/img/Profile.png'),
-                    Settings: require('@/assets/img/Settings.png'),
-                  }
-
-                  return (
-                    <Image
-                      source={icons[route.name]}
-                      style={{ tintColor: focused ? colors.accent : colors.textSecondary }}
-                    />
-                  )
-                },
-              })}
-              tabBarOptions={{
-                activeTintColor: colors.accent,
-                showLabel: false,
-                tabStyle: { backgroundColor: colors.primary },
-              }}>
-              <Tab.Screen name="Profile" component={Profile} />
-              <Tab.Screen name="All Chats" component={Home} />
-              <Tab.Screen name="Settings" component={Settings} />
-            </Tab.Navigator>
-          )}
-        </Stack.Screen>
+      <Stack.Navigator
+        headerMode="screen"
+        initialRouteName="Home"
+        screenOptions={defaultScreenOptions}>
+        <Stack.Screen name="Home" component={HomeTabs} options={{ title: 'All Chats' }} />
         <Stack.Screen
           name="Chat"
           component={Chat}
-          options={({ route }) => {
-            const { firstName, lastName } = route.params.user
-
-            return { title: `${firstName} ${lastName}` }
-          }}
+          options={({ route: { params } }) => ({
+            title: `${params.user.firstName} ${params.user.lastName}`,
+          })}
         />
         <Stack.Screen name="Search" component={Search} />
       </Stack.Navigator>
