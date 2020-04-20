@@ -13,9 +13,11 @@
   },
   "dependencies": {
     "@apollo/client": "^3.0.0-beta.43",
+    "@apollo/link-ws": "^2.0.0-beta.3",
     "@react-native-community/async-storage": "^1.9.0",
     "@react-native-community/masked-view": "^0.1.9",
     "@react-navigation/bottom-tabs": "^5.2.7",
+    "@react-navigation/material-top-tabs": "^5.1.9",
     "@react-navigation/native": "^5.1.6",
     "@react-navigation/stack": "^5.2.11",
     "apollo-link-context": "^1.0.20",
@@ -27,9 +29,13 @@
     "react-native": "0.62.2",
     "react-native-flipper": "^0.37.0",
     "react-native-gesture-handler": "^1.6.1",
+    "react-native-keyboard-aware-scroll-view": "^0.9.1",
+    "react-native-reanimated": "^1.8.0",
     "react-native-safe-area-context": "^0.7.3",
     "react-native-screens": "^2.5.0",
-    "reactotron-react-native": "^5.0.0"
+    "react-native-tab-view": "^2.14.0",
+    "reactotron-react-native": "^5.0.0",
+    "subscriptions-transport-ws": "^0.9.16"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",

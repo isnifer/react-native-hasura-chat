@@ -6,6 +6,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import colors from '@/constants/colors'
 import defaultScreenOptions from '@/constants/defaultScreenOptions'
 import Home from './Home'
+import Chat from './Chat'
 import Profile from './Profile'
 import Settings from './Settings'
 import Search from './Search'
@@ -49,7 +50,15 @@ export default function App() {
             </Tab.Navigator>
           )}
         </Stack.Screen>
+        <Stack.Screen
+          name="Chat"
+          component={Chat}
+          options={({ route }) => {
+            const { firstName, lastName } = route.params.user
 
+            return { title: `${firstName} ${lastName}` }
+          }}
+        />
         <Stack.Screen name="Search" component={Search} />
       </Stack.Navigator>
     </NavigationContainer>

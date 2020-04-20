@@ -3,67 +3,89 @@ import { View, Text, Image, TouchableOpacity, FlatList, StyleSheet } from 'react
 import PropTypes from 'prop-types'
 import { distanceInWordsToNow } from 'date-fns'
 import colors from '@/constants/colors'
+import Spinner from '@/components/Spinner'
 
 const DATA = [
   {
     id: 1,
-    name: 'Diana Smiley',
+    firstName: 'Diana',
+    lastName: 'Smiley',
     message: 'Introducing yours identity',
     time: '2020-04-19T18:20:00Z',
-    image: require('./img/1.png'),
+    photo: require('./img/1.png'),
     unread: true,
     online: true,
   },
   {
     id: 2,
-    name: 'Arden Dean',
+    firstName: 'Arden',
+    lastName: 'Dean',
     message: 'Hey! Whats up, long time no see?',
     time: '2020-04-19T17:20:00Z',
-    image: require('./img/2.png'),
+    photo: require('./img/2.png'),
   },
   {
     id: 3,
-    name: 'Gracelyn Mason',
+    firstName: 'Gracelyn',
+    lastName: 'Mason',
     message: 'We met new users',
     time: '2020-04-19T16:15:00Z',
-    image: require('./img/3.png'),
+    photo: require('./img/3.png'),
     typing: true,
     unread: true,
     online: true,
   },
   {
     id: 4,
-    name: 'Leo Gill',
+    firstName: 'Leo',
+    lastName: 'Gill',
     message: 'She is going to make it happen today',
     time: '2020-04-19T12:34:00Z',
-    image: require('./img/4.png'),
+    photo: require('./img/4.png'),
   },
   {
     id: 5,
-    name: 'Merida Swan',
+    firstName: 'Merida',
+    lastName: 'Swan',
     message: 'Free for a quick call?',
     time: '2020-04-19T10:49:00Z',
-    image: require('./img/5.png'),
+    photo: require('./img/5.png'),
     unread: true,
   },
   {
     id: 6,
-    name: 'Lori Bryson',
+    firstName: 'Lori',
+    lastName: 'Bryson',
     message: 'Lets joinn the video call',
     time: '2020-04-18T8:32:00Z',
-    image: require('./img/6.png'),
+    photo: require('./img/6.png'),
     online: true,
   },
 ]
 
-export default function List({ navigation }) {
+export default function List({ handlePressItem, userId, minimal, loading, error, data }) {
+  if (loading) {
+    return <Spinner flex />
+  }
+
+  if (error) {
+    return (
+      <View>
+        <Text>{JSON.stringify(error, null, 2)}</Text>
+      </View>
+    )
+  }
+
   return (
     <FlatList
-      data={DATA}
+      data={data}
       style={styles.list}
-      keyExtractor={item => `${item.id}`}
-      renderItem={({ item }) => {
-        const time = `${distanceInWordsToNow(item.time)} ago`
+      contentContainerStyle={styles.listContent}
+      keyExtractor={item => item.id}
+      renderItem={({ item: { id, user1, user2 } }) => {
+        const user = user1.id === userId ? user2 : user1
+
+        const time = `${distanceInWordsToNow(user.time || '2020-04-19T17:20:00Z')} ago`
           .replace('about', '')
           .replace(' minutes ', 'm ')
           .replace(' minute ', 'm ')
@@ -72,31 +94,39 @@ export default function List({ navigation }) {
           .replace(' days ', 'd ')
           .replace(' day ', 'd ')
 
+        const photoSource = typeof user.photo === 'string' ? { uri: user.photo } : user.photo
+
         return (
           <TouchableOpacity
             activeOpacity={0.9}
             style={styles.item}
-            onPress={() => navigation.navigate('Chat', item)}>
+            onPress={() => handlePressItem({ chatId: id, user })}>
             <View style={styles.imageContainer}>
-              <Image source={item.image} style={styles.image} />
-              {item.online && <View style={styles.status} />}
+              <Image source={photoSource} style={styles.photo} />
+              {user.online && <View style={styles.status} />}
             </View>
             <View style={styles.textContent}>
-              <View style={styles.text}>
+              <View style={[styles.text, minimal && styles.textMinimal]}>
                 <View style={styles.header}>
-                  <Text style={styles.name}>{item.name}</Text>
-                  {item.unread && <View style={styles.unreadMarker} />}
+                  <Text style={styles.name}>
+                    {user.firstName} {user.lastName}
+                  </Text>
+                  {user.unread && <View style={styles.unreadMarker} />}
                 </View>
-                <Text
-                  style={[styles.message, item.unread && styles.messageUnread]}
-                  numberOfLines={1}>
-                  {item.message}
-                </Text>
+                {!minimal && (
+                  <Text
+                    style={[styles.message, user.unread && styles.messageUnread]}
+                    numberOfLines={1}>
+                    {user.message || 'Last unread message'}
+                  </Text>
+                )}
               </View>
-              <View style={styles.statuses}>
-                <Text style={[styles.time, item.unread && styles.messageUnread]}>{time}</Text>
-                <Text style={styles.typing}>{item.typing ? 'Typing...' : ''}</Text>
-              </View>
+              {!minimal && (
+                <View style={styles.statuses}>
+                  <Text style={[styles.time, user.unread && styles.messageUnread]}>{time}</Text>
+                  <Text style={styles.typing}>{user.typing ? 'Typing...' : ''}</Text>
+                </View>
+              )}
             </View>
           </TouchableOpacity>
         )
@@ -106,12 +136,27 @@ export default function List({ navigation }) {
 }
 
 List.propTypes = {
-  navigation: PropTypes.object.isRequired,
+  handlePressItem: PropTypes.func.isRequired,
+  userId: PropTypes.string.isRequired,
+  loading: PropTypes.bool,
+  error: PropTypes.any,
+  data: PropTypes.array,
+  minimal: PropTypes.bool,
+}
+
+List.defaultProps = {
+  minimal: false,
+  loading: false,
+  error: undefined,
+  data: DATA,
 }
 
 const styles = StyleSheet.create({
   list: {
     paddingHorizontal: 20,
+  },
+  listContent: {
+    paddingBottom: 20,
   },
   item: {
     flexDirection: 'row',
@@ -127,9 +172,10 @@ const styles = StyleSheet.create({
   imageContainer: {
     position: 'relative',
   },
-  image: {
+  photo: {
     width: 45,
     height: 45,
+    borderRadius: 28,
   },
   status: {
     position: 'absolute',
@@ -167,18 +213,24 @@ const styles = StyleSheet.create({
   },
   time: {
     color: colors.textSecondary,
+    textAlign: 'right',
   },
   typing: {
     color: colors.textSecondary,
     textAlign: 'right',
+    fontSize: 11,
   },
   text: {
     flex: 1,
     justifyContent: 'space-between',
-    paddingBottom: 5,
+    paddingBottom: 3,
+  },
+  textMinimal: {
+    justifyContent: 'space-around',
+    paddingBottom: 0,
   },
   statuses: {
     justifyContent: 'space-between',
-    paddingBottom: 5,
+    paddingBottom: 3,
   },
 })
