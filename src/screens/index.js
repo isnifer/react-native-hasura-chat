@@ -1,10 +1,13 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { Image, StatusBar } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import colors from '@/constants/colors'
 import defaultScreenOptions from '@/constants/defaultScreenOptions'
+import useAuthToken from '@/hooks/useAuthToken'
+import Splash from '@/components/Splash'
+import Login from './Login'
 import Home from './Home'
 import Chat from './Chat'
 import Profile from './Profile'
@@ -49,22 +52,34 @@ function HomeTabs() {
 }
 
 export default function App() {
+  const { loading, error, handleSuccessLogin } = useAuthToken()
+
+  if (loading) {
+    return <Splash />
+  }
+
   return (
     <NavigationContainer>
       <StatusBar barStyle="light-content" />
       <Stack.Navigator
         headerMode="screen"
         initialRouteName="Home"
-        screenOptions={defaultScreenOptions}>
-        <Stack.Screen name="Home" component={HomeTabs} options={{ title: 'All Chats' }} />
-        <Stack.Screen
-          name="Chat"
-          component={Chat}
-          options={({ route: { params } }) => ({
-            title: `${params.user.firstName} ${params.user.lastName}`,
-          })}
-        />
-        <Stack.Screen name="Search" component={Search} />
+        screenOptions={error ? { headerShown: false } : defaultScreenOptions}>
+        {error ? (
+          <Stack.Screen name="Login" component={Login} initialParams={{ handleSuccessLogin }} />
+        ) : (
+          <Fragment>
+            <Stack.Screen name="Home" component={HomeTabs} options={{ title: 'All Chats' }} />
+            <Stack.Screen
+              name="Chat"
+              component={Chat}
+              options={({ route: { params } }) => ({
+                title: `${params.user.firstName} ${params.user.lastName}`,
+              })}
+            />
+            <Stack.Screen name="Search" component={Search} />
+          </Fragment>
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   )
