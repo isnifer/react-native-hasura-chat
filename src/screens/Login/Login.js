@@ -1,11 +1,21 @@
 import React, { useState } from 'react'
-import { View, Text, TextInput, ImageBackground, SafeAreaView, StyleSheet } from 'react-native'
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ImageBackground,
+  SafeAreaView,
+  StyleSheet,
+} from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import useAuth from '@/hooks/useAuth'
 import colors from '@/constants/colors'
 
 export default function Login({ route }) {
-  const { loading, loadVerificationCode, loginViaEmail } = useAuth()
+  const { loading, login, loadVerificationCode, loginViaEmail } = useAuth(
+    route.params.handleSuccessLogin
+  )
   const [email, setEmail] = useState('')
   const [verificationCode, setVerificationCode] = useState('')
 
@@ -14,10 +24,7 @@ export default function Login({ route }) {
       return false
     }
 
-    const response = await loginViaEmail({ email, code: verificationCode })
-    if (response) {
-      return route.params.handleSuccessLogin()
-    }
+    return loginViaEmail({ email, code: verificationCode })
   }
 
   async function handleSubmitEmail() {
@@ -67,6 +74,9 @@ export default function Login({ route }) {
               returnKeyLabel="Get Code"
               style={styles.textInput}
             />
+            <TouchableOpacity onPress={login} style={styles.buttonGoogle}>
+              <Text style={styles.buttonTitle}>Login Via Email and Password</Text>
+            </TouchableOpacity>
           </View>
         </KeyboardAwareScrollView>
       </SafeAreaView>

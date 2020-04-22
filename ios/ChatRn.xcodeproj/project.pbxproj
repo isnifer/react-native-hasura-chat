@@ -19,6 +19,7 @@
 		2DCD954D1E0B4F2C00145EB5 /* ChatRnTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* ChatRnTests.m */; };
 		2E72C99F26292AC67007E76A /* libPods-ChatRn-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F8BFB88ABBB27AB1DF112723 /* libPods-ChatRn-tvOSTests.a */; };
 		3924FC1A33B102D9AD637817 /* libPods-ChatRn.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1240E9867739D7C7B8795BDF /* libPods-ChatRn.a */; };
+		66BC462824507BD30015886B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 66BC462724507BD30015886B /* Assets.xcassets */; };
 		E374888BC3D04C36A9322135 /* libPods-ChatRn-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 76DD4D6B81718364AFADA6AA /* libPods-ChatRn-tvOS.a */; };
 /* End PBXBuildFile section */
 
@@ -45,7 +46,7 @@
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* ChatRnTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChatRnTests.m; sourceTree = "<group>"; };
 		1240E9867739D7C7B8795BDF /* libPods-ChatRn.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ChatRn.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07F961A680F5B00A75B9A /* ChatRn.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChatRn.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* Sophie Chat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Sophie Chat.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ChatRn/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = ChatRn/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB21A68108700A75B9A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -56,6 +57,7 @@
 		2D02E4901E0B4A5D006451C7 /* ChatRn-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ChatRn-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		34B17A452C08A348C0C94D3B /* Pods-ChatRn-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatRn-tvOS.release.xcconfig"; path = "Target Support Files/Pods-ChatRn-tvOS/Pods-ChatRn-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		4D3F554A51E7660FDDD987ED /* Pods-ChatRn-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatRn-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-ChatRn-tvOS/Pods-ChatRn-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
+		66BC462724507BD30015886B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		71FA2FFBEA626A128B6439D1 /* libPods-ChatRn-ChatRnTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ChatRn-ChatRnTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		76DD4D6B81718364AFADA6AA /* libPods-ChatRn-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ChatRn-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E4256FD2BCE165934346672 /* Pods-ChatRn-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatRn-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-ChatRn-tvOSTests/Pods-ChatRn-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -129,6 +131,7 @@
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
+				66BC462724507BD30015886B /* Assets.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
@@ -174,7 +177,7 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* ChatRn.app */,
+				13B07F961A680F5B00A75B9A /* Sophie Chat.app */,
 				00E356EE1AD99517003FC87E /* ChatRnTests.xctest */,
 				2D02E47B1E0B4A5D006451C7 /* ChatRn-tvOS.app */,
 				2D02E4901E0B4A5D006451C7 /* ChatRn-tvOSTests.xctest */,
@@ -236,7 +239,7 @@
 			);
 			name = ChatRn;
 			productName = ChatRn;
-			productReference = 13B07F961A680F5B00A75B9A /* ChatRn.app */;
+			productReference = 13B07F961A680F5B00A75B9A /* Sophie Chat.app */;
 			productType = "com.apple.product-type.application";
 		};
 		2D02E47A1E0B4A5D006451C7 /* ChatRn-tvOS */ = {
@@ -291,6 +294,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
+						DevelopmentTeam = EKB9HEASVX;
 						LastSwiftMigration = 1120;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
@@ -338,6 +342,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				66BC462824507BD30015886B /* Assets.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -596,7 +601,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.isnifer.chatrn;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ChatRn.app/ChatRn";
 			};
@@ -616,7 +621,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.isnifer.chatrn;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ChatRn.app/ChatRn";
 			};
@@ -629,6 +634,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = EKB9HEASVX;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
@@ -642,7 +648,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.isnifer.chatrn;
-				PRODUCT_NAME = ChatRn;
+				PRODUCT_NAME = "Sophie Chat";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -656,6 +662,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = EKB9HEASVX;
 				INFOPLIST_FILE = ChatRn/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -664,7 +671,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.isnifer.chatrn;
-				PRODUCT_NAME = ChatRn;
+				PRODUCT_NAME = "Sophie Chat";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -690,7 +697,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.ChatRn-tvOS";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.isnifer.chatrn-tvOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -718,7 +725,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.ChatRn-tvOS";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.isnifer.chatrn-tvOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -745,7 +752,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.ChatRn-tvOSTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.isnifer.chatrn-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ChatRn-tvOS.app/ChatRn-tvOS";
@@ -772,7 +779,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.ChatRn-tvOSTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.isnifer.chatrn-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ChatRn-tvOS.app/ChatRn-tvOS";

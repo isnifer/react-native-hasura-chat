@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, Image, TextInput, StyleSheet } from 'react-native'
+import { View, Text, Image, StyleSheet } from 'react-native'
 import colors from '@/constants/colors'
 
 export default function Profile() {

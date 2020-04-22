@@ -7,7 +7,7 @@ const auth0 = new Auth0({
   clientId: 'bAgNZHv7J2sltsHFSfLkdx6AkgEbBxcn',
 })
 
-export default function useAuth() {
+export default function useAuth(handleSuccessLogin) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
@@ -16,6 +16,7 @@ export default function useAuth() {
       setLoading(true)
       const credentials = await auth0.webAuth.authorize({ scope: 'openid profile email' })
       await setGenericPassword(credentials.idToken, credentials.accessToken)
+      handleSuccessLogin()
     } catch (errorMessage) {
       setError(JSON.stringify(errorMessage, null, 2))
     } finally {
@@ -35,21 +36,16 @@ export default function useAuth() {
   }
 
   async function loginViaEmail({ email, code }) {
-    let success = false
-
     try {
       setLoading(true)
       const credentials = await auth0.auth.loginWithEmail({ email, code })
       await setGenericPassword(credentials.idToken, credentials.accessToken)
-
-      success = true
+      handleSuccessLogin()
     } catch (errorMessage) {
       setError(JSON.stringify(errorMessage, null, 2))
     } finally {
       setLoading(false)
     }
-
-    return success
   }
 
   async function logout() {
