@@ -16,38 +16,39 @@ const TOP_TABS = [
   { name: 'Calls', component: Calls },
 ]
 
+const tabBarOptions = {
+  pressOpacity: 1,
+  showIcon: true,
+  renderIndicator: () => null,
+  activeTintColor: colors.text,
+  tabStyle: { backgroundColor: colors.primary },
+}
+
+const renderTab = ({ name, component }) => (
+  <Tab.Screen
+    key={name}
+    name={name}
+    component={component}
+    options={{
+      tabBarLabel: ({ focused }) => (
+        <View style={styles.tabBarLabel}>
+          <Text style={[styles.label, focused && styles.labelActive]}>{name}</Text>
+          {focused && <View style={styles.status} />}
+        </View>
+      ),
+    }}
+  />
+)
+
+function HomeTabs() {
+  return <Tab.Navigator tabBarOptions={tabBarOptions}>{TOP_TABS.map(renderTab)}</Tab.Navigator>
+}
+
 export default function Home() {
   return (
     <SafeAreaView style={styles.root}>
       <Stack.Navigator initialRouteName="Chats" headerMode="none">
-        <Stack.Screen name="Chats">
-          {() => (
-            <Tab.Navigator
-              tabBarOptions={{
-                pressOpacity: 1,
-                showIcon: true,
-                renderIndicator: () => null,
-                activeTintColor: colors.text,
-                tabStyle: { backgroundColor: colors.primary },
-              }}>
-              {TOP_TABS.map(({ name, component }) => (
-                <Tab.Screen
-                  key={name}
-                  name={name}
-                  component={component}
-                  options={{
-                    tabBarLabel: ({ focused }) => (
-                      <View style={styles.tabBarLabel}>
-                        <Text style={[styles.label, focused && styles.labelActive]}>{name}</Text>
-                        {focused && <View style={styles.status} />}
-                      </View>
-                    ),
-                  }}
-                />
-              ))}
-            </Tab.Navigator>
-          )}
-        </Stack.Screen>
+        <Stack.Screen name="Chats" component={HomeTabs} />
       </Stack.Navigator>
     </SafeAreaView>
   )

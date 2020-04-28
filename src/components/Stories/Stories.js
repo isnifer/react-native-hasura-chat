@@ -97,8 +97,9 @@ List.propTypes = {
 
 const styles = StyleSheet.create({
   list: {
-    paddingVertical: 15,
-    height: 30,
+    paddingTop: 15,
+    paddingBottom: 5,
+    // height: 30,
   },
   listContent: {
     paddingHorizontal: 20,
