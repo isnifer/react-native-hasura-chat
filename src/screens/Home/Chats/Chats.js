@@ -3,9 +3,8 @@ import { View, StyleSheet } from 'react-native'
 import { useQuery, gql } from '@apollo/client'
 import colors from '@/constants/colors'
 import Spacer from '@/components/Spacer'
-import List from '@/components/List'
-import EmptyPlaceholder from '@/components/List/EmptyPlaceholder'
 import Stories from '@/components/Stories'
+import ListChats from './ListChats'
 
 const CHATS = gql`
   query Chats($id: uuid!) {
@@ -43,18 +42,14 @@ export default function Chats({ navigation }) {
   return (
     <View style={styles.container}>
       <Stories navigation={navigation} />
-      {!error ? (
-        <List
-          userId={USER_ID}
-          loading={loading}
-          error={error}
-          data={chats}
-          navigation={navigation}
-          handlePressItem={handlePressChat}
-        />
-      ) : (
-        <EmptyPlaceholder navigation={navigation} />
-      )}
+      <ListChats
+        userId={USER_ID}
+        loading={loading}
+        error={error}
+        data={chats}
+        navigation={navigation}
+        handlePressItem={handlePressChat}
+      />
       <Spacer auto />
       <Spacer auto />
       <Spacer auto />

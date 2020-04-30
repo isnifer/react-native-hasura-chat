@@ -1,70 +1,12 @@
 import React from 'react'
 import { View, Text, Image, TouchableOpacity, FlatList, StyleSheet } from 'react-native'
 import PropTypes from 'prop-types'
-import { distanceInWordsToNow } from 'date-fns'
 import colors from '@/constants/colors'
+import getRelativeTime from '@/utils/getRelativeTime'
 import Spinner from '@/components/Spinner'
 import EmptyListPlaceholder from '@/components/EmptyListPlaceholder'
 
-const DATA = [
-  {
-    id: 1,
-    firstName: 'Diana',
-    lastName: 'Smiley',
-    message: 'Introducing yours identity',
-    time: '2020-04-18T18:20:00Z',
-    photo: require('./img/1.png'),
-    unread: true,
-    online: true,
-  },
-  {
-    id: 2,
-    firstName: 'Arden',
-    lastName: 'Dean',
-    message: 'Hey! Whats up, long time no see?',
-    time: '2020-04-18T17:20:00Z',
-    photo: require('./img/2.png'),
-  },
-  {
-    id: 3,
-    firstName: 'Gracelyn',
-    lastName: 'Mason',
-    message: 'We met new users',
-    time: '2020-04-17T16:15:00Z',
-    photo: require('./img/3.png'),
-    typing: true,
-    unread: true,
-    online: true,
-  },
-  {
-    id: 4,
-    firstName: 'Leo',
-    lastName: 'Gill',
-    message: 'She is going to make it happen today',
-    time: '2020-04-12T12:34:00Z',
-    photo: require('./img/4.png'),
-  },
-  {
-    id: 5,
-    firstName: 'Merida',
-    lastName: 'Swan',
-    message: 'Free for a quick call?',
-    time: '2020-04-09T10:49:00Z',
-    photo: require('./img/5.png'),
-    unread: true,
-  },
-  {
-    id: 6,
-    firstName: 'Lori',
-    lastName: 'Bryson',
-    message: 'Lets joinn the video call',
-    time: '2020-04-01T8:32:00Z',
-    photo: require('./img/6.png'),
-    online: true,
-  },
-]
-
-export default function List(props) {
+export default function ListChats(props) {
   const { navigation, handlePressItem, userId, minimal, loading, error, data } = props
 
   function handleSearchPeople() {
@@ -88,7 +30,7 @@ export default function List(props) {
       <EmptyListPlaceholder
         image={require('./img/no_chats.png')}
         title="No Conversation"
-        subtitle="You didn't make any conversation yet,\nplease select a username"
+        subtitle={`You didn't make any conversation yet,${'\n'}please select a username`}
         actionTitle="Chat People"
         actionHandler={handleSearchPeople}
       />
@@ -103,16 +45,7 @@ export default function List(props) {
       keyExtractor={item => item.id}
       renderItem={({ item: { id, user1, user2 } }) => {
         const user = user1.id === userId ? user2 : user1
-
-        const time = `${distanceInWordsToNow(user.time || '2020-04-19T17:20:00Z')} ago`
-          .replace('about', '')
-          .replace(' minutes ', 'm ')
-          .replace(' minute ', 'm ')
-          .replace(' hours ', 'h ')
-          .replace(' hour ', 'h ')
-          .replace(' days ', 'd ')
-          .replace(' day ', 'd ')
-
+        const time = getRelativeTime(user.time)
         const photoSource = typeof user.photo === 'string' ? { uri: user.photo } : user.photo
 
         return (
@@ -154,7 +87,7 @@ export default function List(props) {
   )
 }
 
-List.propTypes = {
+ListChats.propTypes = {
   navigation: PropTypes.object.isRequired,
   handlePressItem: PropTypes.func.isRequired,
   userId: PropTypes.string.isRequired,
@@ -164,11 +97,11 @@ List.propTypes = {
   minimal: PropTypes.bool,
 }
 
-List.defaultProps = {
+ListChats.defaultProps = {
   minimal: false,
   loading: false,
   error: undefined,
-  data: DATA,
+  data: [],
 }
 
 const styles = StyleSheet.create({

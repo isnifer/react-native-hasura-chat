@@ -3,27 +3,25 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native'
 import PropTypes from 'prop-types'
 import colors from '@/constants/colors'
 
-export default function EmptyPlaceholder({ navigation }) {
-  function handleOpenSearch() {
-    navigation.navigate('Search')
-  }
-
+export default function EmptyListPlaceholder(props) {
   return (
     <View style={styles.container}>
-      <Image source={require('./img/no_chats.png')} />
-      <Text style={styles.title}>No Conversation</Text>
-      <Text style={styles.subtitle}>
-        You didn{"'"}t make any conversation yet,{'\n'}please select a username
-      </Text>
-      <TouchableOpacity onPress={handleOpenSearch}>
-        <Text style={styles.openSearch}>Chat People</Text>
+      <Image source={props.image} />
+      <Text style={styles.title}>{props.title}</Text>
+      <Text style={styles.subtitle}>{props.subtitle}</Text>
+      <TouchableOpacity onPress={props.actionHandler}>
+        <Text style={styles.openSearch}>{props.actionTitle}</Text>
       </TouchableOpacity>
     </View>
   )
 }
 
-EmptyPlaceholder.propTypes = {
-  navigation: PropTypes.object.isRequired,
+EmptyListPlaceholder.propTypes = {
+  image: PropTypes.number.isRequired,
+  title: PropTypes.string.isRequired,
+  subtitle: PropTypes.string.isRequired,
+  actionTitle: PropTypes.string.isRequired,
+  actionHandler: PropTypes.func.isRequired,
 }
 
 const styles = StyleSheet.create({

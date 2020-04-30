@@ -4,6 +4,15 @@ import PropTypes from 'prop-types'
 import colors from '@/constants/colors'
 import BackButton from '@/components/BackButton'
 
+function LeftButtonsDefault({ previous, goBack, title }) {
+  return (
+    <View style={styles.leftButtons}>
+      {!!previous && <BackButton goBack={goBack} />}
+      <Text style={[styles.title, previous && styles.titleInner]}>{title}</Text>
+    </View>
+  )
+}
+
 function RightButtonsProfile() {
   return (
     <View style={styles.rightButtons}>
@@ -37,7 +46,18 @@ function RightButtonsChats() {
   )
 }
 
+function RightButtonsGroupCreateName() {
+  return (
+    <View style={styles.rightButtons}>
+      <TouchableOpacity onPress={() => {}}>
+        <Text style={styles.buttonText}>Done</Text>
+      </TouchableOpacity>
+    </View>
+  )
+}
+
 export default function Header({ title, goBack, previous }) {
+  const LeftButtons = LeftButtonsDefault
   let RightButtons
 
   switch (title) {
@@ -51,6 +71,11 @@ export default function Header({ title, goBack, previous }) {
       break
     }
 
+    case 'GroupCreateName': {
+      RightButtons = RightButtonsGroupCreateName
+      break
+    }
+
     default: {
       RightButtons = RightButtonsChats
       break
@@ -60,10 +85,7 @@ export default function Header({ title, goBack, previous }) {
   return (
     <SafeAreaView style={styles.root}>
       <View style={styles.container}>
-        <View style={styles.leftButtons}>
-          {!!previous && <BackButton goBack={goBack} />}
-          <Text style={[styles.title, previous && styles.titleInner]}>{title}</Text>
-        </View>
+        <LeftButtons previous={previous} goBack={goBack} title={title} />
         <RightButtons />
       </View>
     </SafeAreaView>

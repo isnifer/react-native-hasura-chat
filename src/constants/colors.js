@@ -7,4 +7,5 @@ export default {
   textSecondary: 'hsla(0, 100%, 100%, 0.7)',
   inputSearch: 'hsla(0, 100%, 100%, 0.15)',
   link: '#007AFF',
+  checkbox: '#434448',
 }

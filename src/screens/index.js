@@ -13,6 +13,9 @@ import Chat from './Chat'
 import Profile from './Profile'
 import Settings from './Settings'
 import Search from './Search'
+import GroupCreate from './GroupCreate'
+import GroupCreateName from './GroupCreate/GroupCreateName'
+import HeaderGroupCreate from './GroupCreate/HeaderGroupCreate'
 
 const Stack = createStackNavigator()
 const Tab = createBottomTabNavigator()
@@ -64,8 +67,8 @@ export default function App() {
       <Stack.Navigator
         headerMode="screen"
         initialRouteName="Home"
-        screenOptions={error ? { headerShown: false } : defaultScreenOptions}>
-        {error ? (
+        screenOptions={!error ? { headerShown: false } : defaultScreenOptions}>
+        {!error ? (
           <Stack.Screen name="Login" component={Login} initialParams={{ handleSuccessLogin }} />
         ) : (
           <Fragment>
@@ -78,6 +81,22 @@ export default function App() {
               })}
             />
             <Stack.Screen name="Search" component={Search} />
+            <Stack.Screen
+              name="GroupCreate"
+              component={GroupCreate}
+              options={{
+                header: ({ navigation }) => <HeaderGroupCreate navigation={navigation} />,
+              }}
+            />
+            <Stack.Screen
+              name="GroupCreateName"
+              component={GroupCreateName}
+              options={{
+                header: ({ scene, navigation }) => (
+                  <HeaderGroupCreate scene={scene} navigation={navigation} />
+                ),
+              }}
+            />
           </Fragment>
         )}
       </Stack.Navigator>

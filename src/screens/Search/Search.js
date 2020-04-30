@@ -43,13 +43,7 @@ const CREATE_CHAT = gql`
 const USER_ID = 'c107917b-3537-4b26-9d47-ee3e331c487e'
 
 function useLazyQuery(query, options = {}) {
-  const { refetch } = useQuery(query, { ...options, skip: true })
-
-  const imperativelyCallQuery = variables => {
-    return refetch(variables)
-  }
-
-  return imperativelyCallQuery
+  return useQuery(query, { ...options, skip: true }).refetch
 }
 
 export default function Search({ navigation }) {
