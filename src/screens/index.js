@@ -17,6 +17,7 @@ import GroupChat from './GroupChat'
 import GroupCreate from './GroupCreate'
 import GroupCreateName from './GroupCreate/GroupCreateName'
 import HeaderGroupCreate from './GroupCreate/HeaderGroupCreate'
+import Call from './Call'
 
 const Stack = createStackNavigator()
 const Tab = createBottomTabNavigator()
@@ -85,6 +86,11 @@ export default function App() {
               name="GroupChat"
               component={GroupChat}
               options={({ route: { params } }) => ({ title: `${params.group.name}` })}
+            />
+            <Stack.Screen
+              name="Call"
+              component={Call}
+              options={({ route: { params } }) => ({ title: params.name })}
             />
             <Stack.Screen name="Search" component={Search} />
             <Stack.Screen
