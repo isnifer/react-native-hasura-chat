@@ -74,7 +74,7 @@ export default function Search({ navigation }) {
 
       const { id: chatId, user_2: user } = response3.data.insert_chats.returning[0]
 
-      navigation.navigate('Chat', { chatId, user })
+      navigation.navigate('Chat', { chatId, user, picture: user.photo })
     }
   }
 

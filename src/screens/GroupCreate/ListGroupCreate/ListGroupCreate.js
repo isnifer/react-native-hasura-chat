@@ -1,20 +1,11 @@
 import React from 'react'
 import { View, Text, Image, TouchableOpacity, FlatList, StyleSheet } from 'react-native'
 import PropTypes from 'prop-types'
-import { useImmer } from 'use-immer'
 import colors from '@/constants/colors'
 import Spinner from '@/components/Spinner'
 import Checkbox from '@/components/Checkbox'
 
-export default function ListGroupCreate({ loading, error, data }) {
-  const [selected, updateSelected] = useImmer({})
-
-  function handlePressItem(id) {
-    updateSelected(draft => {
-      draft[id] = !draft[id]
-    })
-  }
-
+export default function ListGroupCreate({ loading, error, data, selected, handlePressItem }) {
   if (loading) {
     return <Spinner flex />
   }
@@ -55,6 +46,8 @@ export default function ListGroupCreate({ loading, error, data }) {
 }
 
 ListGroupCreate.propTypes = {
+  handlePressItem: PropTypes.func.isRequired,
+  selected: PropTypes.object.isRequired,
   loading: PropTypes.bool,
   error: PropTypes.any,
   data: PropTypes.array,

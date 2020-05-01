@@ -13,6 +13,7 @@ import Chat from './Chat'
 import Profile from './Profile'
 import Settings from './Settings'
 import Search from './Search'
+import GroupChat from './GroupChat'
 import GroupCreate from './GroupCreate'
 import GroupCreateName from './GroupCreate/GroupCreateName'
 import HeaderGroupCreate from './GroupCreate/HeaderGroupCreate'
@@ -80,12 +81,19 @@ export default function App() {
                 title: `${params.user.firstName} ${params.user.lastName}`,
               })}
             />
+            <Stack.Screen
+              name="GroupChat"
+              component={GroupChat}
+              options={({ route: { params } }) => ({ title: `${params.group.name}` })}
+            />
             <Stack.Screen name="Search" component={Search} />
             <Stack.Screen
               name="GroupCreate"
               component={GroupCreate}
               options={{
-                header: ({ navigation }) => <HeaderGroupCreate navigation={navigation} />,
+                header: ({ navigation, scene }) => (
+                  <HeaderGroupCreate scene={scene} navigation={navigation} />
+                ),
               }}
             />
             <Stack.Screen

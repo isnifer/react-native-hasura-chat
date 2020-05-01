@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, Image, TextInput, SafeAreaView, StyleSheet } from 'react-native'
 import { useQuery, gql } from '@apollo/client'
 import { debounce } from 'lodash'
+import { useImmer } from 'use-immer'
 import colors from '@/constants/colors'
 import ListGroupCreate from './ListGroupCreate'
 
@@ -23,9 +24,8 @@ const USERS = gql`
   }
 `
 const USER_ID = 'c107917b-3537-4b26-9d47-ee3e331c487e'
-// const GROUP_ID = 'dce11cf5-34fa-44c5-9a20-2cf276ff4e81'
 
-export default function GroupCreate() {
+export default function GroupCreate({ navigation }) {
   const { loading, error, data, refetch } = useQuery(USERS, { variables: { userId: USER_ID } })
   const users = data?.users ?? []
 
@@ -37,6 +37,17 @@ export default function GroupCreate() {
 
     searchPeople({ userId: USER_ID, query: `%${query}%` })
   }
+
+  const [selected, updateSelected] = useImmer({})
+  function handlePressItem(id) {
+    updateSelected(draft => {
+      draft[id] = !draft[id]
+    })
+  }
+
+  useEffect(() => {
+    navigation.setOptions({ userIds: { ...selected, [USER_ID]: true } })
+  }, [selected])
 
   return (
     <SafeAreaView style={styles.root}>
@@ -56,7 +67,13 @@ export default function GroupCreate() {
           style={styles.inputSearch}
         />
       </View>
-      <ListGroupCreate loading={loading} error={error} data={users} />
+      <ListGroupCreate
+        loading={loading}
+        error={error}
+        data={users}
+        selected={selected}
+        handlePressItem={handlePressItem}
+      />
     </SafeAreaView>
   )
 }

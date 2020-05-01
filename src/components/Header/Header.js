@@ -4,10 +4,13 @@ import PropTypes from 'prop-types'
 import colors from '@/constants/colors'
 import BackButton from '@/components/BackButton'
 
-function LeftButtonsDefault({ previous, goBack, title }) {
+function LeftButtonsDefault({ previous, goBack, title, routeParams }) {
   return (
     <View style={styles.leftButtons}>
       {!!previous && <BackButton goBack={goBack} />}
+      {routeParams.picture && (
+        <Image source={{ uri: routeParams.picture }} style={styles.picture} />
+      )}
       <Text style={[styles.title, previous && styles.titleInner]}>{title}</Text>
     </View>
   )
@@ -56,7 +59,7 @@ function RightButtonsGroupCreateName() {
   )
 }
 
-export default function Header({ title, goBack, previous }) {
+export default function Header({ title, goBack, previous, routeParams }) {
   const LeftButtons = LeftButtonsDefault
   let RightButtons
 
@@ -85,7 +88,7 @@ export default function Header({ title, goBack, previous }) {
   return (
     <SafeAreaView style={styles.root}>
       <View style={styles.container}>
-        <LeftButtons previous={previous} goBack={goBack} title={title} />
+        <LeftButtons previous={previous} goBack={goBack} title={title} routeParams={routeParams} />
         <RightButtons />
       </View>
     </SafeAreaView>
@@ -94,16 +97,16 @@ export default function Header({ title, goBack, previous }) {
 
 Header.propTypes = {
   title: PropTypes.string.isRequired,
-  // options: PropTypes.object.isRequired,
+  options: PropTypes.object.isRequired,
   goBack: PropTypes.func.isRequired,
   // routeName: PropTypes.string.isRequired,
   previous: PropTypes.object,
-  // routeParams: PropTypes.object,
+  routeParams: PropTypes.object,
 }
 
 Header.defaultProps = {
   previous: null,
-  // routeParams: {},
+  routeParams: {},
 }
 
 const styles = StyleSheet.create({
@@ -116,6 +119,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 10,
+  },
+  picture: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    marginLeft: 15,
   },
   title: {
     fontSize: 34,

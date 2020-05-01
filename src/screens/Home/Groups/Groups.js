@@ -25,8 +25,8 @@ export default function Groups({ navigation }) {
 
   const groups = data?.groups ?? []
 
-  function handlePressChat({ groupId, user }) {
-    navigation.navigate('Group', { groupId, user })
+  function handlePressItem({ group }) {
+    navigation.navigate('GroupChat', { group, userId: USER_ID, picture: group.picture })
   }
 
   return (
@@ -37,7 +37,7 @@ export default function Groups({ navigation }) {
         error={error}
         data={groups}
         navigation={navigation}
-        handlePressItem={handlePressChat}
+        handlePressItem={handlePressItem}
       />
     </View>
   )

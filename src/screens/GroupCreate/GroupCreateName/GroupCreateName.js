@@ -1,10 +1,16 @@
-import React, { useState } from 'react'
-import { View, Text, TextInput, SafeAreaView, StyleSheet } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { View, TextInput, SafeAreaView, StyleSheet } from 'react-native'
 import colors from '@/constants/colors'
 
 export default function GroupCreateName({ navigation }) {
-  const [picture, setPicture] = useState('')
   const [name, setName] = useState('')
+  const [picture, setPicture] = useState('')
+
+  useEffect(() => {
+    if (name || picture) {
+      navigation.setOptions({ name, picture })
+    }
+  }, [name, picture])
 
   return (
     <SafeAreaView style={styles.root}>

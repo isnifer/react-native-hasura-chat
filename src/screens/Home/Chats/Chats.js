@@ -2,7 +2,6 @@ import React from 'react'
 import { View, StyleSheet } from 'react-native'
 import { useQuery, gql } from '@apollo/client'
 import colors from '@/constants/colors'
-import Spacer from '@/components/Spacer'
 import Stories from '@/components/Stories'
 import ListChats from './ListChats'
 
@@ -36,24 +35,24 @@ export default function Chats({ navigation }) {
   const chats = data?.chats ?? []
 
   function handlePressChat({ chatId, user }) {
-    navigation.navigate('Chat', { chatId, user })
+    navigation.navigate('Chat', { chatId, user, picture: user.photo })
   }
 
   return (
     <View style={styles.container}>
-      <Stories navigation={navigation} />
-      <ListChats
-        userId={USER_ID}
-        loading={loading}
-        error={error}
-        data={chats}
-        navigation={navigation}
-        handlePressItem={handlePressChat}
-      />
-      <Spacer auto />
-      <Spacer auto />
-      <Spacer auto />
-      <Spacer auto />
+      <View style={styles.storiesContainer}>
+        <Stories navigation={navigation} />
+      </View>
+      <View style={styles.chatsContainer}>
+        <ListChats
+          userId={USER_ID}
+          loading={loading}
+          error={error}
+          data={chats}
+          navigation={navigation}
+          handlePressItem={handlePressChat}
+        />
+      </View>
     </View>
   )
 }
@@ -61,7 +60,13 @@ export default function Chats({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'flex-start',
     backgroundColor: colors.backgroundColor,
+  },
+  storiesContainer: {
+    flex: 1,
+  },
+  chatsContainer: {
+    flex: 4.5,
+    justifyContent: 'center',
   },
 })

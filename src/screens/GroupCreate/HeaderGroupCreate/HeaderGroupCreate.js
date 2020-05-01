@@ -21,12 +21,17 @@ const ADD_USERS_TO_GROUP = gql`
   mutation AddUsersToGroup($users: [groups_users_insert_input!]!) {
     insert_groups_users(objects: $users) {
       returning {
-        user_id
-        group_id
+        group {
+          id
+          name
+          picture
+        }
       }
     }
   }
 `
+
+const USER_ID = 'c107917b-3537-4b26-9d47-ee3e331c487e'
 
 export default function HeaderGroupCreate({ navigation, scene }) {
   const routeName = scene?.route?.name
@@ -36,37 +41,30 @@ export default function HeaderGroupCreate({ navigation, scene }) {
   const [addUsersToGroup] = useMutation(ADD_USERS_TO_GROUP)
 
   async function handleSubmitRightButton() {
+    const { options } = scene?.descriptor ?? {}
+
     if (routeName !== FORM_SUBMISSION_SCENE) {
-      return navigation.navigate('GroupCreateName')
+      return navigation.navigate('GroupCreateName', { userIds: options?.userIds })
     }
 
-    const name = 'Architecture'
-    const picture =
-      'https://images.unsplash.com/photo-1588239705312-02089a287b81?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=150&h=150&q=70'
-
+    const { name, picture } = options || {}
     const response = await createGroup({ variables: { name, picture } })
 
     // eslint-disable-next-line camelcase
     const groupId = response?.data?.insert_groups?.returning[0]?.id
+    const userIds = scene?.route?.params?.userIds
     if (groupId) {
-      await addUsersToGroup({
+      const assignResponse = await addUsersToGroup({
         variables: {
-          users: [
-            {
-              user_id: 'c107917b-3537-4b26-9d47-ee3e331c487e',
-              group_id: groupId,
-            },
-            {
-              user_id: 'd778b90b-e882-47cd-a31e-784c415a57aa',
-              group_id: groupId,
-            },
-            {
-              user_id: 'aaef77ec-0b4b-435e-b3da-7d64091f05ba',
-              group_id: groupId,
-            },
-          ],
+          users: Object.keys(userIds).map(userId => ({ user_id: userId, group_id: groupId })),
         },
       })
+
+      // eslint-disable-next-line camelcase
+      const group = assignResponse?.data.insert_groups_users.returning[0].group
+
+      navigation.popToTop()
+      navigation.navigate('GroupChat', { group, userId: USER_ID, picture: group.picture })
     }
   }
 

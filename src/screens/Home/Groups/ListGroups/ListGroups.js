@@ -50,8 +50,7 @@ export default function ListChats(props) {
         return (
           <TouchableOpacity
             activeOpacity={0.9}
-            // onPress={() => handlePressItem({ groupId: group.id })}
-            onPress={handleCreateGroup}
+            onPress={() => handlePressItem({ group })}
             style={styles.item}>
             <View style={styles.imageContainer}>
               <Image source={{ uri: group.picture }} style={styles.picture} />
