@@ -19,6 +19,16 @@
 		2DCD954D1E0B4F2C00145EB5 /* ChatRnTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* ChatRnTests.m */; };
 		2E72C99F26292AC67007E76A /* libPods-ChatRn-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F8BFB88ABBB27AB1DF112723 /* libPods-ChatRn-tvOSTests.a */; };
 		3924FC1A33B102D9AD637817 /* libPods-ChatRn.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1240E9867739D7C7B8795BDF /* libPods-ChatRn.a */; };
+		668EBEC7245CB5AB00A3B1D0 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 668EBEC6245CB5AB00A3B1D0 /* AVFoundation.framework */; };
+		668EBEC9245CB5B700A3B1D0 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 668EBEC8245CB5B700A3B1D0 /* AudioToolbox.framework */; };
+		668EBECB245CB5C200A3B1D0 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 668EBECA245CB5C200A3B1D0 /* CoreGraphics.framework */; };
+		668EBECD245CB5C800A3B1D0 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 668EBECC245CB5C800A3B1D0 /* GLKit.framework */; };
+		668EBED0245CB5DB00A3B1D0 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 668EBECE245CB5DA00A3B1D0 /* CoreAudio.framework */; };
+		668EBED1245CB5DB00A3B1D0 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 668EBECF245CB5DA00A3B1D0 /* CoreVideo.framework */; };
+		668EBED3245CB5E100A3B1D0 /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 668EBED2245CB5E100A3B1D0 /* VideoToolbox.framework */; };
+		668EBED5245CB62D00A3B1D0 /* libc.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 668EBED4245CB62D00A3B1D0 /* libc.tbd */; };
+		668EBED7245CB63600A3B1D0 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 668EBED6245CB63600A3B1D0 /* libc++.tbd */; };
+		668EBED9245CB63F00A3B1D0 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 668EBED8245CB63F00A3B1D0 /* libsqlite3.tbd */; };
 		66BC462824507BD30015886B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 66BC462724507BD30015886B /* Assets.xcassets */; };
 		E374888BC3D04C36A9322135 /* libPods-ChatRn-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 76DD4D6B81718364AFADA6AA /* libPods-ChatRn-tvOS.a */; };
 /* End PBXBuildFile section */
@@ -57,6 +67,16 @@
 		2D02E4901E0B4A5D006451C7 /* ChatRn-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ChatRn-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		34B17A452C08A348C0C94D3B /* Pods-ChatRn-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatRn-tvOS.release.xcconfig"; path = "Target Support Files/Pods-ChatRn-tvOS/Pods-ChatRn-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		4D3F554A51E7660FDDD987ED /* Pods-ChatRn-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatRn-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-ChatRn-tvOS/Pods-ChatRn-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
+		668EBEC6245CB5AB00A3B1D0 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		668EBEC8245CB5B700A3B1D0 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		668EBECA245CB5C200A3B1D0 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		668EBECC245CB5C800A3B1D0 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
+		668EBECE245CB5DA00A3B1D0 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
+		668EBECF245CB5DA00A3B1D0 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		668EBED2245CB5E100A3B1D0 /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
+		668EBED4245CB62D00A3B1D0 /* libc.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libc.tbd; path = usr/lib/libc.tbd; sourceTree = SDKROOT; };
+		668EBED6245CB63600A3B1D0 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
+		668EBED8245CB63F00A3B1D0 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		66BC462724507BD30015886B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		71FA2FFBEA626A128B6439D1 /* libPods-ChatRn-ChatRnTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ChatRn-ChatRnTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		76DD4D6B81718364AFADA6AA /* libPods-ChatRn-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ChatRn-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -84,6 +104,16 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				668EBED9245CB63F00A3B1D0 /* libsqlite3.tbd in Frameworks */,
+				668EBED7245CB63600A3B1D0 /* libc++.tbd in Frameworks */,
+				668EBED5245CB62D00A3B1D0 /* libc.tbd in Frameworks */,
+				668EBED3245CB5E100A3B1D0 /* VideoToolbox.framework in Frameworks */,
+				668EBED0245CB5DB00A3B1D0 /* CoreAudio.framework in Frameworks */,
+				668EBED1245CB5DB00A3B1D0 /* CoreVideo.framework in Frameworks */,
+				668EBECD245CB5C800A3B1D0 /* GLKit.framework in Frameworks */,
+				668EBECB245CB5C200A3B1D0 /* CoreGraphics.framework in Frameworks */,
+				668EBEC9245CB5B700A3B1D0 /* AudioToolbox.framework in Frameworks */,
+				668EBEC7245CB5AB00A3B1D0 /* AVFoundation.framework in Frameworks */,
 				3924FC1A33B102D9AD637817 /* libPods-ChatRn.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -142,6 +172,16 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				668EBED8245CB63F00A3B1D0 /* libsqlite3.tbd */,
+				668EBED6245CB63600A3B1D0 /* libc++.tbd */,
+				668EBED4245CB62D00A3B1D0 /* libc.tbd */,
+				668EBED2245CB5E100A3B1D0 /* VideoToolbox.framework */,
+				668EBECE245CB5DA00A3B1D0 /* CoreAudio.framework */,
+				668EBECF245CB5DA00A3B1D0 /* CoreVideo.framework */,
+				668EBECC245CB5C800A3B1D0 /* GLKit.framework */,
+				668EBECA245CB5C200A3B1D0 /* CoreGraphics.framework */,
+				668EBEC8245CB5B700A3B1D0 /* AudioToolbox.framework */,
+				668EBEC6245CB5AB00A3B1D0 /* AVFoundation.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
 				1240E9867739D7C7B8795BDF /* libPods-ChatRn.a */,
@@ -211,6 +251,7 @@
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
+				0AF9D4381C379273B821D5C5 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -232,6 +273,7 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
+				F1E85A2B5A2573599AA909A3 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -379,6 +421,24 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
 		};
+		0AF9D4381C379273B821D5C5 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ChatRn-ChatRnTests/Pods-ChatRn-ChatRnTests-frameworks.sh",
+				"${PODS_ROOT}/../../node_modules/react-native-webrtc/ios/WebRTC.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WebRTC.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ChatRn-ChatRnTests/Pods-ChatRn-ChatRnTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -479,6 +539,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F1E85A2B5A2573599AA909A3 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ChatRn/Pods-ChatRn-frameworks.sh",
+				"${PODS_ROOT}/../../node_modules/react-native-webrtc/ios/WebRTC.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WebRTC.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ChatRn/Pods-ChatRn-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {

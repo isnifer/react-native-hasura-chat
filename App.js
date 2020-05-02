@@ -3,6 +3,7 @@ import { ApolloClient, ApolloProvider, createHttpLink, split, InMemoryCache } fr
 import { getMainDefinition } from '@apollo/client/utilities'
 import { WebSocketLink } from '@apollo/link-ws'
 import { setContext } from 'apollo-link-context'
+import ConnectyCube from 'react-native-connectycube'
 import Screens from '@/screens'
 
 const httpLink = createHttpLink({ uri: 'https://rn-hasura-chat-app.herokuapp.com/v1/graphql' })
@@ -44,6 +45,14 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
   link: authLink.concat(splitLink),
 })
+
+const CREDENTIALS = {
+  appId: process.env.CONNECTYCUBE_APP_ID,
+  authKey: process.env.CONNECTYCUBE_AUTH_KEY,
+  authSecret: process.env.CONNECTYCUBE_AUTH_SECRET,
+}
+
+ConnectyCube.init(CREDENTIALS, { debug: { mode: 1 } })
 
 export default function App() {
   return (

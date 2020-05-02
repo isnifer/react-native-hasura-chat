@@ -239,6 +239,8 @@ PODS:
     - React
   - react-native-safe-area-context (0.7.3):
     - React
+  - react-native-webrtc (1.75.3):
+    - React
   - React-RCTActionSheet (0.62.2):
     - React-Core/RCTActionSheetHeaders (= 0.62.2)
   - React-RCTAnimation (0.62.2):
@@ -353,6 +355,7 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - react-native-flipper (from `../node_modules/react-native-flipper`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
+  - react-native-webrtc (from `../node_modules/react-native-webrtc`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
   - React-RCTBlob (from `../node_modules/react-native/Libraries/Blob`)
@@ -422,6 +425,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-flipper"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
+  react-native-webrtc:
+    :path: "../node_modules/react-native-webrtc"
   React-RCTActionSheet:
     :path: "../node_modules/react-native/Libraries/ActionSheetIOS"
   React-RCTAnimation:
@@ -486,6 +491,7 @@ SPEC CHECKSUMS:
   React-jsinspector: 512e560d0e985d0e8c479a54a4e5c147a9c83493
   react-native-flipper: 807ececa38ec7a1a66dff128b720bd3f53cc9d2d
   react-native-safe-area-context: 8260e5157617df4b72865f44006797f895b2ada7
+  react-native-webrtc: 86d841823e66d68cc1f86712db1c2956056bf0c2
   React-RCTActionSheet: f41ea8a811aac770e0cc6e0ad6b270c644ea8b7c
   React-RCTAnimation: 49ab98b1c1ff4445148b72a3d61554138565bad0
   React-RCTBlob: a332773f0ebc413a0ce85942a55b064471587a71
@@ -505,6 +511,6 @@ SPEC CHECKSUMS:
   Yoga: 3ebccbdd559724312790e7742142d062476b698e
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: ed098286c57b8651c3bb936c7c710fb08a7f7a00
+PODFILE CHECKSUM: fab4aa96974fc0954c436460dd3e039a2293d1be
 
 COCOAPODS: 1.8.4
