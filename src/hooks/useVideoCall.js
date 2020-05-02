@@ -20,8 +20,6 @@ export default function useVideoCall() {
   // https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createOffer
   // initiates the creation of SDP
   async function createOffer() {
-    console.log('Offer')
-
     const sdp = await pc.current.createOffer()
     pc.current.setLocalDescription(sdp)
     sendToPeer('offerOrAnswer', sdp)
@@ -30,8 +28,6 @@ export default function useVideoCall() {
   // https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createAnswer
   // creates an SDP answer to an offer received from remote pc
   async function createAnswer() {
-    console.log('Answer')
-
     const sdp = await pc.current.createAnswer()
     pc.current.setLocalDescription(sdp)
     sendToPeer('offerOrAnswer', sdp)
@@ -71,14 +67,12 @@ export default function useVideoCall() {
   }
 
   useEffect(() => {
-    socket.current = io('ws://a5faf6.emporter.eu/webrtcPeer', { path: '/webrtc', query: {} })
+    socket.current = io('ws://e9fe30.emporter.eu/webrtcPeer', { path: '/webrtc', query: {} })
 
     // eslint-disable-next-line no-console
     socket.current.on('connection-success', () => console.log('success'))
 
     socket.current.on('offerOrAnswer', sdp => {
-      console.log('offerOrAnswer')
-
       // set sdp as remote description
       pc.current.setRemoteDescription(new RTCSessionDescription(sdp))
     })
@@ -91,22 +85,16 @@ export default function useVideoCall() {
 
     // triggered when a new candidate is returned
     pc.current.onicecandidate = e => {
-      console.log('onicecandidate')
-
       if (e.candidate) {
         sendToPeer('candidate', e.candidate)
       }
     }
 
     // triggered when there is a change in connection state
-    pc.current.oniceconnectionstatechange = e => {
-      console.log('oniceconnectionstatechange')
-    }
+    pc.current.oniceconnectionstatechange = () => {}
 
     // triggered when a stream is added to pc, see below - pc.current.addStream(stream)
     pc.current.onaddstream = e => {
-      console.log('onaddstream', e.stream)
-
       setRemoteStream(e.stream.toURL())
       pc.current.addStream(e.stream)
     }
