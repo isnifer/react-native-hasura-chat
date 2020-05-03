@@ -3,7 +3,8 @@ import { ApolloClient, ApolloProvider, createHttpLink, split, InMemoryCache } fr
 import { getMainDefinition } from '@apollo/client/utilities'
 import { WebSocketLink } from '@apollo/link-ws'
 import { setContext } from 'apollo-link-context'
-import ConnectyCube from 'react-native-connectycube'
+import { getGenericPassword } from 'react-native-keychain'
+import { getSyncProfile } from '@/utils/auth/syncProfile'
 import Screens from '@/screens'
 
 const httpLink = createHttpLink({ uri: 'https://rn-hasura-chat-app.herokuapp.com/v1/graphql' })
@@ -34,25 +35,30 @@ const splitLink = split(
   httpLink
 )
 
-const authLink = setContext(async (_, { headers }) => ({
-  headers: {
-    ...headers,
-    'x-hasura-admin-secret': process.env.CHAT_APP_X_HASURA_ID,
-  },
-}))
+const authLink = setContext(async (_, { headers }) => {
+  let credentials = {}
+
+  const { id } = getSyncProfile()
+
+  try {
+    credentials = await getGenericPassword()
+  } catch (error) {
+    console.log("Keychain couldn't be accessed!", error) // eslint-disable-line no-console
+  }
+
+  return {
+    headers: {
+      ...headers,
+      authorization: credentials.username ? `Bearer ${credentials.username}` : '',
+      'x-hasura-user-id': id,
+    },
+  }
+})
 
 const client = new ApolloClient({
   cache: new InMemoryCache(),
   link: authLink.concat(splitLink),
 })
-
-const CREDENTIALS = {
-  appId: process.env.CONNECTYCUBE_APP_ID,
-  authKey: process.env.CONNECTYCUBE_AUTH_KEY,
-  authSecret: process.env.CONNECTYCUBE_AUTH_SECRET,
-}
-
-ConnectyCube.init(CREDENTIALS, { debug: { mode: 1 } })
 
 export default function App() {
   return (

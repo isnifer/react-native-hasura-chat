@@ -2,13 +2,14 @@ import React, { useState } from 'react'
 import { View, Text, TextInput, StyleSheet } from 'react-native'
 import { KeyboardAwareFlatList } from 'react-native-keyboard-aware-scroll-view'
 import { useSubscription, useMutation, gql } from '@apollo/client'
+import { getSyncProfile } from '@/utils/auth/syncProfile'
 import colors from '@/constants/colors'
 import Spinner from '@/components/Spinner'
 import Spacer from '@/components/Spacer'
 
 const LOAD_MESSAGES = gql`
   subscription LoadMessages($chatId: uuid!) {
-    messages(where: { chat_id: { _eq: $chatId } }) {
+    messages: chats_messages(where: { chat_id: { _eq: $chatId } }) {
       id
       text
       userId: user_id
@@ -18,7 +19,7 @@ const LOAD_MESSAGES = gql`
 
 const SEND_MESSAGE = gql`
   mutation SendMessage($chatId: uuid!, $userId: uuid, $text: String!) {
-    insert_messages(objects: { chat_id: $chatId, user_id: $userId, text: $text }) {
+    insert_chats_messages(objects: { chat_id: $chatId, user_id: $userId, text: $text }) {
       returning {
         id
         text
@@ -30,10 +31,9 @@ const SEND_MESSAGE = gql`
   }
 `
 
-const USER_ID = 'c107917b-3537-4b26-9d47-ee3e331c487e'
-
 export default function Chat({ route }) {
-  const { chatId, user } = route.params
+  const { id: USER_ID } = getSyncProfile()
+  const { chatId, opponent } = route.params
   const [message, setMessage] = useState('')
   const { loading, error, data } = useSubscription(LOAD_MESSAGES, { variables: { chatId } })
   const [sendMessage] = useMutation(SEND_MESSAGE)
@@ -95,11 +95,11 @@ export default function Chat({ route }) {
             <View>
               <View
                 style={
-                  userId === user.id
+                  userId === opponent.id
                     ? [styles.message, isThisLastMessageInBlock && styles.messageLast]
                     : [styles.myMessage, isThisLastMessageInBlock && styles.myMessageLast]
                 }>
-                <Text style={userId === user.id ? styles.messageText : styles.myMessageText}>
+                <Text style={userId === opponent.id ? styles.messageText : styles.myMessageText}>
                   {text}
                 </Text>
               </View>

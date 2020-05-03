@@ -6,9 +6,7 @@ import getRelativeTime from '@/utils/getRelativeTime'
 import Spinner from '@/components/Spinner'
 import EmptyListPlaceholder from '@/components/EmptyListPlaceholder'
 
-export default function ListChats(props) {
-  const { navigation, handlePressItem, userId, minimal, loading, error, data } = props
-
+export default function ListChats({ navigation, handlePressItem, loading, error, data }) {
   function handleSearchPeople() {
     navigation.navigate('Search')
   }
@@ -20,7 +18,7 @@ export default function ListChats(props) {
   if (error) {
     return (
       <View>
-        <Text>{JSON.stringify(error, null, 2)}</Text>
+        <Text style={styles.error}>{JSON.stringify(error, null, 2)}</Text>
       </View>
     )
   }
@@ -42,43 +40,37 @@ export default function ListChats(props) {
       data={data}
       style={styles.list}
       contentContainerStyle={styles.listContent}
-      keyExtractor={item => item.id}
-      renderItem={({ item: { id, user1, user2 } }) => {
-        const user = user1.id === userId ? user2 : user1
-        const time = getRelativeTime(user.time)
-        const photoSource = typeof user.photo === 'string' ? { uri: user.photo } : user.photo
+      keyExtractor={item => item.chatId}
+      renderItem={({ item: { chatId, opponent } }) => {
+        const time = getRelativeTime(opponent.time)
 
         return (
           <TouchableOpacity
             activeOpacity={0.9}
             style={styles.item}
-            onPress={() => handlePressItem({ chatId: id, user })}>
+            onPress={() => handlePressItem({ chatId, opponent })}>
             <View style={styles.imageContainer}>
-              <Image source={photoSource} style={styles.photo} />
-              {user.online && <View style={styles.status} />}
+              <Image source={{ uri: opponent.photo }} style={styles.photo} />
+              {opponent.online && <View style={styles.status} />}
             </View>
             <View style={styles.textContent}>
-              <View style={[styles.text, minimal && styles.textMinimal]}>
+              <View style={styles.text}>
                 <View style={styles.header}>
                   <Text style={styles.name}>
-                    {user.firstName} {user.lastName}
+                    {opponent.firstName} {opponent.lastName}
                   </Text>
-                  {user.unread && <View style={styles.unreadMarker} />}
+                  {opponent.unread && <View style={styles.unreadMarker} />}
                 </View>
-                {!minimal && (
-                  <Text
-                    style={[styles.message, user.unread && styles.messageUnread]}
-                    numberOfLines={1}>
-                    {user.message || 'Last unread message'}
-                  </Text>
-                )}
+                <Text
+                  style={[styles.message, opponent.unread && styles.messageUnread]}
+                  numberOfLines={1}>
+                  {opponent.message || 'Last unread message'}
+                </Text>
               </View>
-              {!minimal && (
-                <View style={styles.statuses}>
-                  <Text style={[styles.time, user.unread && styles.messageUnread]}>{time}</Text>
-                  <Text style={styles.typing}>{user.typing ? 'Typing...' : ''}</Text>
-                </View>
-              )}
+              <View style={styles.statuses}>
+                <Text style={[styles.time, opponent.unread && styles.messageUnread]}>{time}</Text>
+                <Text style={styles.typing}>{opponent.typing ? 'Typing...' : ''}</Text>
+              </View>
             </View>
           </TouchableOpacity>
         )
@@ -90,15 +82,12 @@ export default function ListChats(props) {
 ListChats.propTypes = {
   navigation: PropTypes.object.isRequired,
   handlePressItem: PropTypes.func.isRequired,
-  userId: PropTypes.string.isRequired,
   loading: PropTypes.bool,
   error: PropTypes.any,
   data: PropTypes.array,
-  minimal: PropTypes.bool,
 }
 
 ListChats.defaultProps = {
-  minimal: false,
   loading: false,
   error: undefined,
   data: [],
@@ -178,12 +167,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingBottom: 3,
   },
-  textMinimal: {
-    justifyContent: 'space-around',
-    paddingBottom: 0,
-  },
   statuses: {
     justifyContent: 'space-between',
     paddingBottom: 3,
+  },
+  error: {
+    color: colors.text,
   },
 })

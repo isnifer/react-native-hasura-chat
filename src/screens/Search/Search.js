@@ -1,37 +1,59 @@
 import React from 'react'
 import { SafeAreaView, StyleSheet } from 'react-native'
 import { useQuery, useMutation, gql } from '@apollo/client'
+import { getSyncProfile } from '@/utils/auth/syncProfile'
 import colors from '@/constants/colors'
-import List from '@/components/List'
+import ListSearch from './ListSearch'
 
 const USERS = gql`
-  query Users($id: uuid!) {
-    users(where: { id: { _neq: $id } }) {
+  query Users($userId: uuid!) {
+    users(where: { id: { _neq: $userId } }) {
       id
+      photo
       firstName: first_name
       lastName: last_name
-      photo
     }
   }
 `
 
-const CONVERSATION = gql`
-  query Conversation($userId1: uuid!, $userId2: uuid!) {
-    chats(where: { _and: { user_id_1: { _eq: $userId1 }, user_id_2: { _eq: $userId2 } } }) {
-      id
-      user_id_1
-      user_id_2
+const LOAD_CONVERSATION = gql`
+  query LoadConversation($userId: uuid!, $opponentId: uuid!) {
+    chats: chats_users(
+      where: { _and: [{ user_id: { _eq: $userId } }, { opponent_id: { _eq: $opponentId } }] }
+    ) {
+      chatId: chat_id
+      opponent {
+        id
+        photo
+        firstName: first_name
+        lastName: last_name
+      }
     }
   }
 `
 
 const CREATE_CHAT = gql`
-  mutation CreateChat($userId1: uuid!, $userId2: uuid!) {
-    insert_chats(objects: { user_id_1: $userId1, user_id_2: $userId2 }) {
+  mutation CreateChat {
+    insert_chats(objects: {}) {
       returning {
         id
-        user_2 {
+      }
+    }
+  }
+`
+
+const ADD_USERS_TO_CHAT = gql`
+  mutation AddUsersToChat($chatId: uuid!, $userId: uuid!, $opponentId: uuid!) {
+    insert_chats_users(
+      objects: [
+        { chat_id: $chatId, user_id: $userId, opponent_id: $opponentId }
+        { chat_id: $chatId, user_id: $opponentId, opponent_id: $userId }
+      ]
+    ) {
+      returning {
+        opponent {
           id
+          photo
           firstName: first_name
           lastName: last_name
         }
@@ -40,54 +62,48 @@ const CREATE_CHAT = gql`
   }
 `
 
-const USER_ID = 'c107917b-3537-4b26-9d47-ee3e331c487e'
+// a8043099-4f78-46fa-b541-558535d0c9b5
+// 4b9884bf-7680-4a49-be00-4ea36b8d7f25
 
 function useLazyQuery(query, options = {}) {
   return useQuery(query, { ...options, skip: true }).refetch
 }
 
 export default function Search({ navigation }) {
-  const { loading, error, data } = useQuery(USERS, {
-    variables: { id: USER_ID },
-  })
+  const { id: userId } = getSyncProfile()
+  const { loading, error, data } = useQuery(USERS, { variables: { userId } })
 
-  const loadConveration = useLazyQuery(CONVERSATION)
+  const loadConveration = useLazyQuery(LOAD_CONVERSATION)
   const [createChat] = useMutation(CREATE_CHAT)
+  const [addUsersToChat] = useMutation(ADD_USERS_TO_CHAT)
 
   const users = data?.users ?? []
 
-  async function handlePressContact({ id: foreignUserId }) {
-    let chat
+  async function handlePressItem({ opponentId }) {
+    let response = await loadConveration({ userId, opponentId })
+    let { chatId, opponent } = response?.data.chats[0] ?? {}
 
-    const response = await loadConveration({ userId1: USER_ID, userId2: foreignUserId })
-    if (!response.errors && !response.data.chats.length) {
-      const response2 = await loadConveration({ userId1: foreignUserId, userId2: USER_ID })
-      chat = !response2.errors ? response2.data.chats[0] : undefined
-    } else {
-      chat = data.chats[0] // eslint-disable-line
-    }
+    if (!chatId) {
+      try {
+        response = await createChat()
+        // eslint-disable-next-line camelcase
+        chatId = response.data.insert_chats.returning[0].id
 
-    if (!chat) {
-      const response3 = await createChat({
-        variables: { userId1: USER_ID, userId2: foreignUserId },
-      })
+        response = await addUsersToChat({ variables: { chatId, userId, opponentId } })
+        // eslint-disable-next-line prefer-destructuring
+        opponent = response.data.insert_chats_users.returning[0].opponent
+      } catch (errorMessage) {
+        // eslint-disable-next-line no-console
+        console.log('Could not create a chat', errorMessage)
+      }
 
-      const { id: chatId, user_2: user } = response3.data.insert_chats.returning[0]
-
-      navigation.navigate('Chat', { chatId, user, picture: user.photo })
+      navigation.navigate('Chat', { chatId, opponent, picture: opponent.photo })
     }
   }
 
   return (
     <SafeAreaView style={styles.root}>
-      <List
-        minimal
-        loading={loading}
-        error={error}
-        data={users}
-        navigation={navigation}
-        handlePressItem={handlePressContact}
-      />
+      <ListSearch loading={loading} error={error} data={users} handlePressItem={handlePressItem} />
     </SafeAreaView>
   )
 }

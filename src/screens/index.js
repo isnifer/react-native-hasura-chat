@@ -69,8 +69,8 @@ export default function App() {
       <Stack.Navigator
         headerMode="screen"
         initialRouteName="Home"
-        screenOptions={!error ? { headerShown: false } : defaultScreenOptions}>
-        {!error ? (
+        screenOptions={error ? { headerShown: false } : defaultScreenOptions}>
+        {error ? (
           <Stack.Screen name="Login" component={Login} initialParams={{ handleSuccessLogin }} />
         ) : (
           <Fragment>
@@ -79,7 +79,7 @@ export default function App() {
               name="Chat"
               component={Chat}
               options={({ route: { params } }) => ({
-                title: `${params.user.firstName} ${params.user.lastName}`,
+                title: `${params.opponent.firstName} ${params.opponent.lastName}`,
               })}
             />
             <Stack.Screen

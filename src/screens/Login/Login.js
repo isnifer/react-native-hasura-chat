@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React from 'react'
 import {
   View,
   Text,
-  TextInput,
+  Image,
   TouchableOpacity,
   ImageBackground,
   SafeAreaView,
@@ -13,70 +13,28 @@ import useAuth from '@/hooks/useAuth'
 import colors from '@/constants/colors'
 
 export default function Login({ route }) {
-  const { loading, login, loadVerificationCode, loginViaEmail } = useAuth(
-    route.params.handleSuccessLogin
-  )
-  const [email, setEmail] = useState('')
-  const [verificationCode, setVerificationCode] = useState('')
-
-  async function handleSubmitVerificationCode() {
-    if (loading) {
-      return false
-    }
-
-    return loginViaEmail({ email, code: verificationCode })
-  }
-
-  async function handleSubmitEmail() {
-    if (loading) {
-      return false
-    }
-
-    return loadVerificationCode({ email })
-  }
+  const { login, google } = useAuth(route.params.handleSuccessLogin)
 
   return (
     <ImageBackground source={require('@/assets/img/splash.jpg')} style={styles.backgroundImage}>
       <SafeAreaView style={styles.root}>
         <View style={styles.logoContainer}>
-          <Text style={styles.logo}>Brand New Chat</Text>
+          <Text style={styles.logo}>Sophie Chat</Text>
         </View>
-        <KeyboardAwareScrollView style={styles.scrollView}>
+        <KeyboardAwareScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
           <View style={styles.spacer} />
           <View style={styles.container}>
             <Text style={styles.title}>Get Login</Text>
-            <TextInput
-              enablesReturnKeyAutomatically
-              autoCompleteType="email"
-              autoCorrect={false}
-              autoCapitalize="none"
-              value={email}
-              onChangeText={setEmail}
-              onSubmitEditing={handleSubmitEmail}
-              keyboardType="email-address"
-              clearButtonMode="while-editing"
-              placeholder="john@appleseed.com"
-              placeholderTextColor={colors.textSecondary}
-              returnKeyType="send"
-              returnKeyLabel="Get Code"
-              style={styles.textInput}
-            />
-            <TextInput
-              enablesReturnKeyAutomatically
-              value={verificationCode}
-              onChangeText={setVerificationCode}
-              onSubmitEditing={handleSubmitVerificationCode}
-              keyboardType="number-pad"
-              clearButtonMode="while-editing"
-              placeholder="Verification Code"
-              placeholderTextColor={colors.textSecondary}
-              returnKeyType="send"
-              returnKeyLabel="Get Code"
-              style={styles.textInput}
-            />
-            <TouchableOpacity onPress={login} style={styles.buttonGoogle}>
-              <Text style={styles.buttonTitle}>Login Via Email and Password</Text>
-            </TouchableOpacity>
+            <View style={styles.buttons}>
+              <TouchableOpacity activeOpacity={0.8} onPress={login} style={styles.button}>
+                <Image source={require('./img/Auth0.png')} style={styles.buttonLogo} />
+                <Text style={styles.buttonTitle}>Login via Auth0</Text>
+              </TouchableOpacity>
+              <TouchableOpacity activeOpacity={0.8} onPress={google} style={styles.button}>
+                <Image source={require('./img/Google.png')} style={styles.buttonLogo} />
+                <Text style={styles.buttonTitle}>Login via Google</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </KeyboardAwareScrollView>
       </SafeAreaView>
@@ -120,17 +78,21 @@ const styles = StyleSheet.create({
     fontSize: 40,
     fontWeight: 'bold',
     color: colors.text,
-    marginBottom: 30,
   },
-  buttonGoogle: {
-    width: '100%',
+  buttons: {
+    marginTop: 20,
+  },
+  button: {
     height: 47,
-    paddingRight: 20,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: '#10557F',
     borderRadius: 30,
+    marginTop: 20,
+    position: 'relative',
+  },
+  buttonDisabled: {
+    opacity: 0.4,
   },
   buttonTitle: {
     flex: 1,
@@ -138,6 +100,13 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: colors.text,
     textAlign: 'center',
+  },
+  buttonLogo: {
+    width: 45,
+    height: 45,
+    position: 'absolute',
+    top: 0,
+    left: 1,
   },
   textInput: {
     height: 45,

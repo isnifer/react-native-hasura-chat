@@ -8,7 +8,7 @@ const DATA = [
     id: 1,
     name: 'Diana Smiley',
     message: 'Introducing yours identity',
-    image: require('@/components/List/img/1.png'),
+    image: 'https://i.imgur.com/e7wQICs.jpg',
     unread: true,
     online: true,
     live: true,
@@ -16,45 +16,45 @@ const DATA = [
   {
     id: 2,
     name: 'Arden Dean',
-    image: require('@/components/List/img/2.png'),
+    image: 'https://i.imgur.com/j2MGH1j.jpg',
   },
   {
     id: 3,
     name: 'Gracelyn Mason',
     message: 'We met new users',
-    image: require('@/components/List/img/3.png'),
+    image: 'https://i.imgur.com/CzwdPAk.jpg',
     unread: true,
     online: true,
   },
   {
     id: 4,
     name: 'Leo Gill',
-    image: require('@/components/List/img/4.png'),
+    image: 'https://i.imgur.com/bjisMYO.jpg',
   },
   {
     id: 5,
     name: 'Merida Swan',
-    image: require('@/components/List/img/5.png'),
+    image: 'https://i.imgur.com/B4nweNh.jpg',
     unread: true,
   },
   {
     id: 6,
     name: 'Lori Bryson',
-    image: require('@/components/List/img/6.png'),
+    image: 'https://i.imgur.com/XYbAjJP.jpg',
     online: true,
   },
   {
     id: 7,
     name: 'Abella Danger',
     message: 'Introducing yours identity',
-    image: require('@/components/List/img/1.png'),
+    image: 'https://i.imgur.com/0Sd9PPp.jpg',
     unread: true,
     online: true,
   },
   {
     id: 8,
     name: 'Keiran Lee',
-    image: require('@/components/List/img/2.png'),
+    image: 'https://i.imgur.com/XUEGjYD.jpg',
   },
 ]
 
@@ -81,7 +81,7 @@ export default function List({ navigation }) {
           style={styles.item}
           onPress={() => navigation.navigate('Story', item)}>
           <View style={styles.imageContainer}>
-            <Image source={item.image} style={styles.image} />
+            <Image source={{ uri: item.image }} style={styles.image} />
             {item.online && <View style={styles.status} />}
           </View>
           <Text style={styles.name}>{item.name.split(' ')[0]}</Text>
