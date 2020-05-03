@@ -36,46 +36,48 @@ export default function ListChats({ navigation, handlePressItem, loading, error,
   }
 
   return (
-    <FlatList
-      data={data}
-      style={styles.list}
-      contentContainerStyle={styles.listContent}
-      keyExtractor={item => item.chatId}
-      renderItem={({ item: { chatId, opponent } }) => {
-        const time = getRelativeTime(opponent.time)
+    <View style={styles.root}>
+      <FlatList
+        data={data}
+        style={styles.list}
+        contentContainerStyle={styles.container}
+        keyExtractor={item => item.chatId}
+        renderItem={({ item: { chatId, opponent } }) => {
+          const time = getRelativeTime(opponent.time)
 
-        return (
-          <TouchableOpacity
-            activeOpacity={0.9}
-            style={styles.item}
-            onPress={() => handlePressItem({ chatId, opponent })}>
-            <View style={styles.imageContainer}>
-              <Image source={{ uri: opponent.photo }} style={styles.photo} />
-              {opponent.online && <View style={styles.status} />}
-            </View>
-            <View style={styles.textContent}>
-              <View style={styles.text}>
-                <View style={styles.header}>
-                  <Text style={styles.name}>
-                    {opponent.firstName} {opponent.lastName}
+          return (
+            <TouchableOpacity
+              activeOpacity={0.9}
+              style={styles.item}
+              onPress={() => handlePressItem({ chatId, opponent })}>
+              <View style={styles.imageContainer}>
+                <Image source={{ uri: opponent.photo }} style={styles.photo} />
+                {opponent.online && <View style={styles.status} />}
+              </View>
+              <View style={styles.textContent}>
+                <View style={styles.text}>
+                  <View style={styles.header}>
+                    <Text style={styles.name}>
+                      {opponent.firstName} {opponent.lastName}
+                    </Text>
+                    {opponent.unread && <View style={styles.unreadMarker} />}
+                  </View>
+                  <Text
+                    style={[styles.message, opponent.unread && styles.messageUnread]}
+                    numberOfLines={1}>
+                    {opponent.message || 'Last unread message'}
                   </Text>
-                  {opponent.unread && <View style={styles.unreadMarker} />}
                 </View>
-                <Text
-                  style={[styles.message, opponent.unread && styles.messageUnread]}
-                  numberOfLines={1}>
-                  {opponent.message || 'Last unread message'}
-                </Text>
+                <View style={styles.statuses}>
+                  <Text style={[styles.time, opponent.unread && styles.messageUnread]}>{time}</Text>
+                  <Text style={styles.typing}>{opponent.typing ? 'Typing...' : ''}</Text>
+                </View>
               </View>
-              <View style={styles.statuses}>
-                <Text style={[styles.time, opponent.unread && styles.messageUnread]}>{time}</Text>
-                <Text style={styles.typing}>{opponent.typing ? 'Typing...' : ''}</Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-        )
-      }}
-    />
+            </TouchableOpacity>
+          )
+        }}
+      />
+    </View>
   )
 }
 
@@ -94,10 +96,11 @@ ListChats.defaultProps = {
 }
 
 const styles = StyleSheet.create({
-  list: {
-    paddingHorizontal: 20,
+  root: {
+    height: '100%',
   },
-  listContent: {
+  container: {
+    paddingHorizontal: 20,
     paddingBottom: 20,
   },
   item: {

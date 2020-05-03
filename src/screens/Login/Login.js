@@ -13,7 +13,7 @@ import useAuth from '@/hooks/useAuth'
 import colors from '@/constants/colors'
 
 export default function Login({ route }) {
-  const { login, google } = useAuth(route.params.handleSuccessLogin)
+  const { login, google } = useAuth(route.params)
 
   return (
     <ImageBackground source={require('@/assets/img/splash.jpg')} style={styles.backgroundImage}>
@@ -21,7 +21,9 @@ export default function Login({ route }) {
         <View style={styles.logoContainer}>
           <Text style={styles.logo}>Sophie Chat</Text>
         </View>
-        <KeyboardAwareScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
+        <KeyboardAwareScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollView}>
           <View style={styles.spacer} />
           <View style={styles.container}>
             <Text style={styles.title}>Get Login</Text>
@@ -63,7 +65,7 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   scrollView: {
-    flex: 1,
+    flexGrow: 1,
   },
   container: {
     backgroundColor: colors.primary,

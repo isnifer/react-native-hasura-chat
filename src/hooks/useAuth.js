@@ -1,14 +1,15 @@
 import { useState } from 'react'
 import Auth0 from 'react-native-auth0'
-import { getGenericPassword, setGenericPassword } from 'react-native-keychain'
+import { getGenericPassword, resetGenericPassword } from 'react-native-keychain'
 import authCredentials from '@/constants/auth0'
 import updateCredentials from '@/utils/auth/updateCredentials'
+import { setSyncProfile } from '@/utils/auth/syncProfile'
 
 const auth0 = new Auth0(authCredentials)
 const scope = 'openid profile email offline_access'
 const audience = `https://${authCredentials.domain}/userinfo`
 
-export default function useAuth(handleSuccessLogin) {
+export default function useAuth({ handleSuccessLogin, handleSuccessLogout }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
@@ -26,7 +27,7 @@ export default function useAuth(handleSuccessLogin) {
       await updateCredentials(credentials)
       handleSuccessLogin()
     } catch (errorMessage) {
-      setError(errorMessage)
+      setError(JSON.stringify(errorMessage, null, 2))
     } finally {
       setLoading(false)
     }
@@ -58,7 +59,7 @@ export default function useAuth(handleSuccessLogin) {
       await updateCredentials(credentials)
       handleSuccessLogin()
     } catch (errorMessage) {
-      setError(errorMessage)
+      setError(JSON.stringify(errorMessage, null, 2))
     } finally {
       setLoading(false)
     }
@@ -67,23 +68,18 @@ export default function useAuth(handleSuccessLogin) {
   async function logout() {
     try {
       setLoading(true)
-      await auth0.webAuth.clearSession({})
-
       const credentials = await getGenericPassword()
       const { refreshToken } = JSON.parse(credentials.password)
 
       await auth0.auth.revoke({ refreshToken })
-      await setGenericPassword(
-        '',
-        JSON.stringify({
-          accessToken: null,
-          refreshToken: null,
-          updatedAt: null,
-          userprofile: null,
-        })
-      )
+      await resetGenericPassword()
+      setSyncProfile({})
+
+      handleSuccessLogout()
     } catch (errorMessage) {
       setError(JSON.stringify(errorMessage, null, 2))
+    } finally {
+      setLoading(false)
     }
   }
 

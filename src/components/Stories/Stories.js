@@ -60,34 +60,35 @@ const DATA = [
 
 export default function List({ navigation }) {
   return (
-    <FlatList
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      data={DATA}
-      style={styles.list}
-      contentContainerStyle={styles.listContent}
-      keyExtractor={item => `${item.id}`}
-      ListHeaderComponent={
-        <View style={styles.listHeaderComponent}>
-          <TouchableOpacity style={[styles.image, styles.yourStory]}>
-            <Image source={require('./img/icon_plus.png')} />
-          </TouchableOpacity>
-          <Text style={styles.name}>Your Story</Text>
-        </View>
-      }
-      renderItem={({ item }) => (
-        <TouchableOpacity
-          activeOpacity={1}
-          style={styles.item}
-          onPress={() => navigation.navigate('Story', item)}>
-          <View style={styles.imageContainer}>
-            <Image source={{ uri: item.image }} style={styles.image} />
-            {item.online && <View style={styles.status} />}
+    <View>
+      <FlatList
+        horizontal
+        data={DATA}
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.listContent}
+        keyExtractor={item => `${item.id}`}
+        ListHeaderComponent={
+          <View style={styles.listHeaderComponent}>
+            <TouchableOpacity style={[styles.image, styles.yourStory]}>
+              <Image source={require('./img/icon_plus.png')} />
+            </TouchableOpacity>
+            <Text style={styles.name}>Your Story</Text>
           </View>
-          <Text style={styles.name}>{item.name.split(' ')[0]}</Text>
-        </TouchableOpacity>
-      )}
-    />
+        }
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            activeOpacity={1}
+            style={styles.item}
+            onPress={() => navigation.navigate('Story', item)}>
+            <View style={styles.imageContainer}>
+              <Image source={{ uri: item.image }} style={styles.image} />
+              {item.online && <View style={styles.status} />}
+            </View>
+            <Text style={styles.name}>{item.name.split(' ')[0]}</Text>
+          </TouchableOpacity>
+        )}
+      />
+    </View>
   )
 }
 
@@ -96,12 +97,9 @@ List.propTypes = {
 }
 
 const styles = StyleSheet.create({
-  list: {
+  listContent: {
     paddingTop: 15,
     paddingBottom: 5,
-    // height: 30,
-  },
-  listContent: {
     paddingHorizontal: 20,
     alignItems: 'flex-start',
   },

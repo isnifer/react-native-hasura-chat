@@ -1,6 +1,4 @@
 export default function getHeaderTitle({ options, scene }) {
-  // console.log(options, scene)
-
   const { routeNames, index } = scene?.route?.state ?? {}
   if (routeNames) {
     const routeName = routeNames[index]

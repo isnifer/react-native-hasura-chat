@@ -10,7 +10,7 @@ const AUTH0_TOKEN_EXPIRATION_TIME = 86400
 
 export default function useAuthToken() {
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(false)
+  const [unauthReason, setUnauthReason] = useState(null)
 
   useEffect(() => {
     async function retriveAccessToken() {
@@ -44,7 +44,7 @@ export default function useAuthToken() {
           setSyncProfile(JSON.parse(password).userprofile)
         }
       } catch (errorMessage) {
-        setError(errorMessage)
+        setUnauthReason(JSON.stringify(errorMessage, null, 2))
       } finally {
         setLoading(false)
       }
@@ -54,12 +54,17 @@ export default function useAuthToken() {
   }, [])
 
   function handleSuccessLogin() {
-    setError(null)
+    setUnauthReason(null)
+  }
+
+  function handleSuccessLogout() {
+    setUnauthReason('You have successfully logged out')
   }
 
   return {
     loading,
-    error,
+    unauthReason,
     handleSuccessLogin,
+    handleSuccessLogout,
   }
 }

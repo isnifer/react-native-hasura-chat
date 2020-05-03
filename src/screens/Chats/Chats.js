@@ -32,20 +32,16 @@ export default function Chats({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.storiesContainer}>
-        <Stories navigation={navigation} />
-      </View>
-      <View style={styles.chatsContainer}>
-        <ListChats
-          userId={userId}
-          loading={loading}
-          error={error}
-          data={chats}
-          navigation={navigation}
-          handlePressItem={handlePressChat}
-          handleRefresh={refetch}
-        />
-      </View>
+      <Stories navigation={navigation} />
+      <ListChats
+        userId={userId}
+        loading={loading}
+        error={error}
+        data={chats}
+        navigation={navigation}
+        handlePressItem={handlePressChat}
+        handleRefresh={refetch}
+      />
     </View>
   )
 }
@@ -54,12 +50,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.backgroundColor,
-  },
-  storiesContainer: {
-    flex: 1,
-  },
-  chatsContainer: {
-    flex: 4.5,
-    justifyContent: 'center',
   },
 })

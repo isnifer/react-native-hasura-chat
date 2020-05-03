@@ -67,7 +67,7 @@ export default function useVideoCall() {
   }
 
   useEffect(() => {
-    socket.current = io('ws://e9fe30.emporter.eu/webrtcPeer', { path: '/webrtc', query: {} })
+    socket.current = io('ws://d83fe5.emporter.eu/webrtcPeer', { path: '/webrtc', query: {} })
 
     // eslint-disable-next-line no-console
     socket.current.on('connection-success', () => console.log('success'))
