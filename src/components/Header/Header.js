@@ -36,13 +36,13 @@ function RightButtonsSettings() {
   )
 }
 
-function RightButtonsChats() {
+function RightButtonsChats({ navigation }) {
   return (
     <View style={styles.rightButtons}>
       <TouchableOpacity onPress={() => {}}>
         <Image source={require('./img/person.png')} />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => {}} style={styles.buttonSearch}>
+      <TouchableOpacity onPress={() => navigation.navigate('Search')} style={styles.buttonSearch}>
         <Image source={require('./img/search.png')} />
       </TouchableOpacity>
     </View>
@@ -59,7 +59,7 @@ function RightButtonsGroupCreateName() {
   )
 }
 
-export default function Header({ title, goBack, previous, routeParams }) {
+export default function Header({ title, goBack, previous, routeParams, navigation }) {
   const LeftButtons = LeftButtonsDefault
   let RightButtons
 
@@ -89,15 +89,16 @@ export default function Header({ title, goBack, previous, routeParams }) {
     <SafeAreaView style={styles.root}>
       <View style={styles.container}>
         <LeftButtons previous={previous} goBack={goBack} title={title} routeParams={routeParams} />
-        <RightButtons />
+        <RightButtons navigation={navigation} />
       </View>
     </SafeAreaView>
   )
 }
 
 Header.propTypes = {
+  navigation: PropTypes.object.isRequired,
   title: PropTypes.string.isRequired,
-  options: PropTypes.object.isRequired,
+  // options: PropTypes.object.isRequired,
   goBack: PropTypes.func.isRequired,
   // routeName: PropTypes.string.isRequired,
   previous: PropTypes.object,

@@ -96,9 +96,9 @@ export default function Search({ navigation }) {
         // eslint-disable-next-line no-console
         console.log('Could not create a chat', errorMessage)
       }
-
-      navigation.navigate('Chat', { chatId, opponent, picture: opponent.photo })
     }
+
+    navigation.navigate('Chat', { chatId, opponent, picture: opponent.photo })
   }
 
   return (

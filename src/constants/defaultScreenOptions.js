@@ -12,6 +12,7 @@ export default {
         title={title}
         options={options}
         previous={previous}
+        navigation={navigation}
         goBack={navigation.goBack}
         routeName={scene.route.name}
         routeParams={scene.route.params}
