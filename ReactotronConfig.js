@@ -1,12 +1,11 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import Reactotron from 'reactotron-react-native'
-import ReactotronFlipper from 'reactotron-react-native/dist/flipper'
+// import ReactotronFlipper from 'reactotron-react-native/dist/flipper'
 
 const client = Reactotron.setAsyncStorageHandler(AsyncStorage)
   // controls connection & communication settings
-  .configure({
-    createSocket: path => new ReactotronFlipper(path),
-  })
+  // .configure({ createSocket: path => new ReactotronFlipper(path) })
+  .configure()
   .useReactNative() // add all built-in react native plugins
   .connect() // let's connect!
 
@@ -21,6 +20,6 @@ console.log = (...args) => {
     name: 'CONSOLE.LOG',
     important: true,
     value: args,
-    preview: args.length ? JSON.stringify(args) : args[0],
+    preview: args,
   })
 }

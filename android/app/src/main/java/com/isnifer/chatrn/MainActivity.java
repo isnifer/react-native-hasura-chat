@@ -1,4 +1,4 @@
-package com.chatrn;
+package com.isnifer.chatrn;
 
 import com.facebook.react.ReactActivity;
 

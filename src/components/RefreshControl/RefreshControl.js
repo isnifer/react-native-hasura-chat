@@ -3,12 +3,13 @@ import { RefreshControl as RNRefreshControl } from 'react-native'
 import PropTypes from 'prop-types'
 import colors from '@/constants/colors'
 
-export default function RefreshControl({ handleRefresh }) {
+export default function RefreshControl({ handleRefresh, title }) {
   const [refreshing, setRefreshing] = useState(false)
 
   const onRefresh = useCallback(async () => {
     try {
       setRefreshing(true)
+
       await handleRefresh()
     } finally {
       setRefreshing(false)
@@ -17,9 +18,12 @@ export default function RefreshControl({ handleRefresh }) {
 
   return (
     <RNRefreshControl
+      enabled={refreshing}
       refreshing={refreshing}
       onRefresh={onRefresh}
+      title={title}
       tintColor={colors.textSecondary}
+      titleColor={colors.textSecondary}
       progressBackgroundColor={colors.textSecondary}
     />
   )
@@ -27,4 +31,9 @@ export default function RefreshControl({ handleRefresh }) {
 
 RefreshControl.propTypes = {
   handleRefresh: PropTypes.func.isRequired,
+  title: PropTypes.string,
+}
+
+RefreshControl.defaultProps = {
+  title: 'Pull to Refresh',
 }

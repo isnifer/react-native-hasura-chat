@@ -1,14 +1,11 @@
 import React from 'react'
 import { ScrollView, Text, Image, TouchableOpacity, StyleSheet } from 'react-native'
 import PropTypes from 'prop-types'
-import RefreshControl from '@/components/RefreshControl'
 import colors from '@/constants/colors'
 
 export default function EmptyListPlaceholder(props) {
   return (
-    <ScrollView
-      contentContainerStyle={styles.container}
-      refreshControl={<RefreshControl handleRefresh={props.handleRefresh} />}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Image source={props.image} />
       <Text style={styles.title}>{props.title}</Text>
       <Text style={styles.subtitle}>{props.subtitle}</Text>
@@ -25,11 +22,6 @@ EmptyListPlaceholder.propTypes = {
   subtitle: PropTypes.string.isRequired,
   actionTitle: PropTypes.string.isRequired,
   actionHandler: PropTypes.func.isRequired,
-  handleRefresh: PropTypes.func,
-}
-
-EmptyListPlaceholder.defaultProps = {
-  handleRefresh: () => Promise.resolve(),
 }
 
 const styles = StyleSheet.create({

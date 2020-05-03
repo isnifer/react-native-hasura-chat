@@ -5,12 +5,9 @@ import { CALLS_TYPES } from '@/constants'
 import colors from '@/constants/colors'
 import getRelativeTime from '@/utils/getRelativeTime'
 import Spinner from '@/components/Spinner'
-import RefreshControl from '@/components/RefreshControl'
 import EmptyListPlaceholder from '@/components/EmptyListPlaceholder'
 
-export default function ListCalls(props) {
-  const { navigation, handlePressItem, handleRefresh, loading, error, data } = props
-
+export default function ListCalls({ navigation, handlePressItem, loading, error, data }) {
   function handleCreateCall() {
     navigation.navigate('CallCreate')
   }
@@ -35,7 +32,6 @@ export default function ListCalls(props) {
         subtitle="You don't participate in any call yet"
         actionTitle="Make Phone Call"
         actionHandler={handleCreateCall}
-        handleRefresh={handleRefresh}
       />
     )
   }
@@ -46,7 +42,6 @@ export default function ListCalls(props) {
       style={styles.list}
       contentContainerStyle={styles.listContent}
       keyExtractor={item => item.call.id}
-      refreshControl={<RefreshControl handleRefresh={handleRefresh} />}
       renderItem={({ item: { call } }) => {
         const time = getRelativeTime()
         const callName =

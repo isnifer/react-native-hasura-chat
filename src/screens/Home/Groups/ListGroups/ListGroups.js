@@ -4,12 +4,9 @@ import PropTypes from 'prop-types'
 import colors from '@/constants/colors'
 import getRelativeTime from '@/utils/getRelativeTime'
 import Spinner from '@/components/Spinner'
-import RefreshControl from '@/components/RefreshControl'
 import EmptyListPlaceholder from '@/components/EmptyListPlaceholder'
 
-export default function ListChats(props) {
-  const { navigation, handlePressItem, handleRefresh, loading, error, data } = props
-
+export default function ListChats({ navigation, handlePressItem, loading, error, data }) {
   function handleCreateGroup() {
     navigation.navigate('GroupCreate')
   }
@@ -34,7 +31,6 @@ export default function ListChats(props) {
         subtitle="You don't participate in any group yet"
         actionTitle="Create Group"
         actionHandler={handleCreateGroup}
-        handleRefresh={handleRefresh}
       />
     )
   }
@@ -45,7 +41,6 @@ export default function ListChats(props) {
       style={styles.list}
       contentContainerStyle={styles.listContent}
       keyExtractor={item => item.group.id}
-      refreshControl={<RefreshControl handleRefresh={handleRefresh} />}
       renderItem={({ item: { group } }) => {
         const time = getRelativeTime()
         const user = {}
@@ -86,7 +81,6 @@ export default function ListChats(props) {
 ListChats.propTypes = {
   navigation: PropTypes.object.isRequired,
   handlePressItem: PropTypes.func.isRequired,
-  handleRefresh: PropTypes.func.isRequired,
   loading: PropTypes.bool,
   error: PropTypes.any,
   data: PropTypes.array,
