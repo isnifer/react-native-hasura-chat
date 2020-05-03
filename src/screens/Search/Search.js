@@ -62,9 +62,6 @@ const ADD_USERS_TO_CHAT = gql`
   }
 `
 
-// a8043099-4f78-46fa-b541-558535d0c9b5
-// 4b9884bf-7680-4a49-be00-4ea36b8d7f25
-
 function useLazyQuery(query, options = {}) {
   return useQuery(query, { ...options, skip: true }).refetch
 }
@@ -98,6 +95,7 @@ export default function Search({ navigation }) {
       }
     }
 
+    navigation.popToTop()
     navigation.navigate('Chat', { chatId, opponent, picture: opponent.photo })
   }
 

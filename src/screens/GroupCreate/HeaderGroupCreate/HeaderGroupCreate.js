@@ -2,6 +2,7 @@ import React from 'react'
 import { View, Text, TouchableOpacity, SafeAreaView, StyleSheet } from 'react-native'
 import PropTypes from 'prop-types'
 import { useMutation, gql } from '@apollo/client'
+import { getSyncProfile } from '@/utils/auth/syncProfile'
 import colors from '@/constants/colors'
 import BackButton from '@/components/BackButton'
 
@@ -31,9 +32,9 @@ const ADD_USERS_TO_GROUP = gql`
   }
 `
 
-const USER_ID = 'c107917b-3537-4b26-9d47-ee3e331c487e'
-
 export default function HeaderGroupCreate({ navigation, scene }) {
+  const { id: currentUserId } = getSyncProfile()
+
   const routeName = scene?.route?.name
   const rightButtonTitle = routeName === FORM_SUBMISSION_SCENE ? 'Done' : 'Next'
 
@@ -64,7 +65,7 @@ export default function HeaderGroupCreate({ navigation, scene }) {
       const group = assignResponse?.data.insert_groups_users.returning[0].group
 
       navigation.popToTop()
-      navigation.navigate('GroupChat', { group, userId: USER_ID, picture: group.picture })
+      navigation.navigate('GroupChat', { group, userId: currentUserId, picture: group.picture })
     }
   }
 

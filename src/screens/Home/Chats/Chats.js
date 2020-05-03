@@ -23,9 +23,7 @@ const CHATS = gql`
 
 export default function Chats({ navigation }) {
   const { id: userId } = getSyncProfile()
-
-  const { loading, error, data } = useQuery(CHATS, { variables: { userId } })
-
+  const { loading, error, data, refetch } = useQuery(CHATS, { variables: { userId } })
   const chats = data?.chats ?? []
 
   function handlePressChat({ chatId, opponent }) {
@@ -45,6 +43,7 @@ export default function Chats({ navigation }) {
           data={chats}
           navigation={navigation}
           handlePressItem={handlePressChat}
+          handleRefresh={refetch}
         />
       </View>
     </View>

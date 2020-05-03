@@ -4,9 +4,12 @@ import PropTypes from 'prop-types'
 import colors from '@/constants/colors'
 import getRelativeTime from '@/utils/getRelativeTime'
 import Spinner from '@/components/Spinner'
+import RefreshControl from '@/components/RefreshControl'
 import EmptyListPlaceholder from '@/components/EmptyListPlaceholder'
 
-export default function ListChats({ navigation, handlePressItem, loading, error, data }) {
+export default function ListChats(props) {
+  const { navigation, handlePressItem, handleRefresh, loading, error, data } = props
+
   function handleSearchPeople() {
     navigation.navigate('Search')
   }
@@ -31,6 +34,7 @@ export default function ListChats({ navigation, handlePressItem, loading, error,
         subtitle={`You didn't make any conversation yet,${'\n'}please select a username`}
         actionTitle="Chat People"
         actionHandler={handleSearchPeople}
+        handleRefresh={handleRefresh}
       />
     )
   }
@@ -41,6 +45,7 @@ export default function ListChats({ navigation, handlePressItem, loading, error,
       style={styles.list}
       contentContainerStyle={styles.listContent}
       keyExtractor={item => item.chatId}
+      refreshControl={<RefreshControl handleRefresh={handleRefresh} />}
       renderItem={({ item: { chatId, opponent } }) => {
         const time = getRelativeTime(opponent.time)
 
@@ -82,6 +87,7 @@ export default function ListChats({ navigation, handlePressItem, loading, error,
 ListChats.propTypes = {
   navigation: PropTypes.object.isRequired,
   handlePressItem: PropTypes.func.isRequired,
+  handleRefresh: PropTypes.func.isRequired,
   loading: PropTypes.bool,
   error: PropTypes.any,
   data: PropTypes.array,

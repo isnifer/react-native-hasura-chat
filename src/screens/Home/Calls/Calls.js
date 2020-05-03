@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, StyleSheet } from 'react-native'
 import { useQuery, gql } from '@apollo/client'
+import { getSyncProfile } from '@/utils/auth/syncProfile'
 import colors from '@/constants/colors'
 import ListCalls from './ListCalls'
 
@@ -24,13 +25,9 @@ const CALLS = gql`
   }
 `
 
-const USER_ID = 'c107917b-3537-4b26-9d47-ee3e331c487e'
-
 export default function Calls({ navigation }) {
-  const { loading, error, data } = useQuery(CALLS, {
-    variables: { userId: USER_ID },
-  })
-
+  const { id: userId } = getSyncProfile()
+  const { loading, error, data, refetch } = useQuery(CALLS, { variables: { userId } })
   const calls = data?.calls ?? []
 
   function handlePressItem({ name, photo, users, type }) {
@@ -40,12 +37,13 @@ export default function Calls({ navigation }) {
   return (
     <View style={styles.container}>
       <ListCalls
-        userId={USER_ID}
+        userId={userId}
         loading={loading}
         error={error}
         data={calls}
         navigation={navigation}
         handlePressItem={handlePressItem}
+        handleRefresh={refetch}
       />
     </View>
   )

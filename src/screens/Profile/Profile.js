@@ -1,35 +1,66 @@
 import React from 'react'
 import { View, Text, Image, StyleSheet } from 'react-native'
+import { useQuery, gql } from '@apollo/client'
+import { getSyncProfile } from '@/utils/auth/syncProfile'
 import colors from '@/constants/colors'
+import Spinner from '@/components/Spinner'
+
+const LOAD_USER = gql`
+  query UserProfile($userId: uuid!) {
+    profile: users_by_pk(id: $userId) {
+      id
+      bio
+      photo
+      phone
+      username
+      firstName: first_name
+      lastName: last_name
+    }
+  }
+`
 
 export default function Profile() {
+  const { id: userId } = getSyncProfile()
+  const { loading, error, data } = useQuery(LOAD_USER, { variables: { userId } })
+  const profile = data?.profile ?? {}
+
+  if (loading) {
+    return <Spinner flex />
+  }
+
+  if (error) {
+    return (
+      <View>
+        <Text style={styles.error}>{JSON.stringify(error, null, 2)}</Text>
+      </View>
+    )
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.profileInfo}>
         <View style={styles.photoContainer}>
-          <Image source={{ uri: 'https://i.imgur.com/0Sd9PPp.jpg' }} style={styles.photo} />
+          <Image source={{ uri: profile.photo }} style={styles.photo} />
         </View>
         <View style={styles.item}>
           <Text style={styles.label}>First Name</Text>
-          <Text style={styles.value}>Jesse</Text>
+          <Text style={styles.value}>{profile.firstName}</Text>
         </View>
         <View style={styles.item}>
           <Text style={styles.label}>Last Name</Text>
-          <Text style={styles.value}>Edwards</Text>
+          <Text style={styles.value}>{profile.lastName}</Text>
         </View>
         <View style={styles.item}>
           <Text style={styles.label}>Bio</Text>
-          <Text style={styles.value}>
-            Hello World! I{"'"}m lucky guy! This is my long bio story.
-          </Text>
+          <Text style={styles.value}>{profile.bio}</Text>
         </View>
         <View style={styles.item}>
           <Text style={styles.label}>Phone</Text>
-          <Text style={styles.value}>+1 800 555-34-34</Text>
+          <Text style={styles.value}>{profile.phone}</Text>
         </View>
         <View style={styles.item}>
           <Text style={styles.label}>Username</Text>
-          <Text style={styles.value}>@jesse.edwards</Text>
+          <Text style={styles.value}>@{profile.username}</Text>
         </View>
       </View>
     </View>
@@ -77,5 +108,8 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: colors.text,
     textAlign: 'right',
+  },
+  error: {
+    color: colors.text,
   },
 })

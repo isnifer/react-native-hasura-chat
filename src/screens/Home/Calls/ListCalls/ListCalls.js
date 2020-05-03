@@ -5,9 +5,12 @@ import { CALLS_TYPES } from '@/constants'
 import colors from '@/constants/colors'
 import getRelativeTime from '@/utils/getRelativeTime'
 import Spinner from '@/components/Spinner'
+import RefreshControl from '@/components/RefreshControl'
 import EmptyListPlaceholder from '@/components/EmptyListPlaceholder'
 
-export default function ListCalls({ navigation, handlePressItem, loading, error, data }) {
+export default function ListCalls(props) {
+  const { navigation, handlePressItem, handleRefresh, loading, error, data } = props
+
   function handleCreateCall() {
     navigation.navigate('CallCreate')
   }
@@ -19,7 +22,7 @@ export default function ListCalls({ navigation, handlePressItem, loading, error,
   if (error) {
     return (
       <View>
-        <Text>{JSON.stringify(error, null, 2)}</Text>
+        <Text style={styles.error}>{JSON.stringify(error, null, 2)}</Text>
       </View>
     )
   }
@@ -32,6 +35,7 @@ export default function ListCalls({ navigation, handlePressItem, loading, error,
         subtitle="You don't participate in any call yet"
         actionTitle="Make Phone Call"
         actionHandler={handleCreateCall}
+        handleRefresh={handleRefresh}
       />
     )
   }
@@ -42,6 +46,7 @@ export default function ListCalls({ navigation, handlePressItem, loading, error,
       style={styles.list}
       contentContainerStyle={styles.listContent}
       keyExtractor={item => item.call.id}
+      refreshControl={<RefreshControl handleRefresh={handleRefresh} />}
       renderItem={({ item: { call } }) => {
         const time = getRelativeTime()
         const callName =
@@ -185,5 +190,8 @@ const styles = StyleSheet.create({
   },
   videoActionContainer: {
     marginRight: 20,
+  },
+  error: {
+    color: colors.text,
   },
 })

@@ -3,6 +3,7 @@ import { View, Image, TextInput, SafeAreaView, StyleSheet } from 'react-native'
 import { useQuery, gql } from '@apollo/client'
 import { debounce } from 'lodash'
 import { useImmer } from 'use-immer'
+import { getSyncProfile } from '@/utils/auth/syncProfile'
 import colors from '@/constants/colors'
 import ListGroupCreate from './ListGroupCreate'
 
@@ -23,10 +24,10 @@ const USERS = gql`
     }
   }
 `
-const USER_ID = 'c107917b-3537-4b26-9d47-ee3e331c487e'
 
 export default function GroupCreate({ navigation }) {
-  const { loading, error, data, refetch } = useQuery(USERS, { variables: { userId: USER_ID } })
+  const { id: userId } = getSyncProfile()
+  const { loading, error, data, refetch } = useQuery(USERS, { variables: { userId } })
   const users = data?.users ?? []
 
   const [searchValue, setSearchValue] = useState('')
@@ -35,7 +36,7 @@ export default function GroupCreate({ navigation }) {
   function handleSearchPeople(query) {
     setSearchValue(query)
 
-    searchPeople({ userId: USER_ID, query: `%${query}%` })
+    searchPeople({ userId, query: `%${query}%` })
   }
 
   const [selected, updateSelected] = useImmer({})
@@ -46,7 +47,7 @@ export default function GroupCreate({ navigation }) {
   }
 
   useEffect(() => {
-    navigation.setOptions({ userIds: { ...selected, [USER_ID]: true } })
+    navigation.setOptions({ userIds: { ...selected, [userId]: true } })
   }, [selected])
 
   return (

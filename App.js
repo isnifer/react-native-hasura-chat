@@ -13,10 +13,16 @@ const wsLink = new WebSocketLink({
   uri: 'ws://rn-hasura-chat-app.herokuapp.com/v1/graphql',
   options: {
     reconnect: true,
-    connectionParams: {
-      headers: {
-        'x-hasura-admin-secret': process.env.CHAT_APP_X_HASURA_ID,
-      },
+    connectionParams: async () => {
+      const { id } = getSyncProfile()
+      const { username: idToken } = await getGenericPassword()
+
+      return {
+        headers: {
+          authorization: `Bearer ${idToken}`,
+          'x-hasura-user-id': id,
+        },
+      }
     },
   },
 })
@@ -36,20 +42,13 @@ const splitLink = split(
 )
 
 const authLink = setContext(async (_, { headers }) => {
-  let credentials = {}
-
   const { id } = getSyncProfile()
-
-  try {
-    credentials = await getGenericPassword()
-  } catch (error) {
-    console.log("Keychain couldn't be accessed!", error) // eslint-disable-line no-console
-  }
+  const { username: idToken } = await getGenericPassword()
 
   return {
     headers: {
       ...headers,
-      authorization: credentials.username ? `Bearer ${credentials.username}` : '',
+      authorization: `Bearer ${idToken}`,
       'x-hasura-user-id': id,
     },
   }

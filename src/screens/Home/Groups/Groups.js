@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, StyleSheet } from 'react-native'
 import { useQuery, gql } from '@apollo/client'
+import { getSyncProfile } from '@/utils/auth/syncProfile'
 import colors from '@/constants/colors'
 import ListGroups from './ListGroups'
 
@@ -16,28 +17,25 @@ const GROUPS = gql`
   }
 `
 
-const USER_ID = 'c107917b-3537-4b26-9d47-ee3e331c487e'
-
 export default function Groups({ navigation }) {
-  const { loading, error, data } = useQuery(GROUPS, {
-    variables: { userId: USER_ID },
-  })
-
+  const { id: userId } = getSyncProfile()
+  const { loading, error, data, refetch } = useQuery(GROUPS, { variables: { userId } })
   const groups = data?.groups ?? []
 
   function handlePressItem({ group }) {
-    navigation.navigate('GroupChat', { group, userId: USER_ID, picture: group.picture })
+    navigation.navigate('GroupChat', { group, userId, picture: group.picture })
   }
 
   return (
     <View style={styles.container}>
       <ListGroups
-        userId={USER_ID}
+        userId={userId}
         loading={loading}
         error={error}
         data={groups}
         navigation={navigation}
         handlePressItem={handlePressItem}
+        handleRefresh={refetch}
       />
     </View>
   )

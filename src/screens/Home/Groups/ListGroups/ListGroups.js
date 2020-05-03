@@ -4,10 +4,11 @@ import PropTypes from 'prop-types'
 import colors from '@/constants/colors'
 import getRelativeTime from '@/utils/getRelativeTime'
 import Spinner from '@/components/Spinner'
+import RefreshControl from '@/components/RefreshControl'
 import EmptyListPlaceholder from '@/components/EmptyListPlaceholder'
 
 export default function ListChats(props) {
-  const { navigation, handlePressItem, minimal, loading, error, data } = props
+  const { navigation, handlePressItem, handleRefresh, loading, error, data } = props
 
   function handleCreateGroup() {
     navigation.navigate('GroupCreate')
@@ -33,6 +34,7 @@ export default function ListChats(props) {
         subtitle="You don't participate in any group yet"
         actionTitle="Create Group"
         actionHandler={handleCreateGroup}
+        handleRefresh={handleRefresh}
       />
     )
   }
@@ -43,6 +45,7 @@ export default function ListChats(props) {
       style={styles.list}
       contentContainerStyle={styles.listContent}
       keyExtractor={item => item.group.id}
+      refreshControl={<RefreshControl handleRefresh={handleRefresh} />}
       renderItem={({ item: { group } }) => {
         const time = getRelativeTime()
         const user = {}
@@ -57,7 +60,7 @@ export default function ListChats(props) {
               {user.online && <View style={styles.status} />}
             </View>
             <View style={styles.textContent}>
-              <View style={[styles.text, minimal && styles.textMinimal]}>
+              <View style={styles.text}>
                 <View style={styles.header}>
                   <Text style={styles.name}>{group.name}</Text>
                   {user.unread && <View style={styles.unreadMarker} />}
@@ -83,14 +86,13 @@ export default function ListChats(props) {
 ListChats.propTypes = {
   navigation: PropTypes.object.isRequired,
   handlePressItem: PropTypes.func.isRequired,
+  handleRefresh: PropTypes.func.isRequired,
   loading: PropTypes.bool,
   error: PropTypes.any,
   data: PropTypes.array,
-  minimal: PropTypes.bool,
 }
 
 ListChats.defaultProps = {
-  minimal: false,
   loading: false,
   error: undefined,
   data: [],
@@ -169,10 +171,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     paddingBottom: 3,
-  },
-  textMinimal: {
-    justifyContent: 'space-around',
-    paddingBottom: 0,
   },
   statuses: {
     justifyContent: 'space-between',
