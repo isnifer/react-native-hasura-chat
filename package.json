@@ -8,6 +8,8 @@
     "start": "react-native start --reset-cache",
     "pod:install": "(cd ios && pod install)",
     "pod:update": "(cd ios && pod repo update)",
+    "android:build": "(cd android && ./gradlew assembleRelease)",
+    "android:upload": "adb install -r ./android/app/build/outputs/apk/release/app-release.apk",
     "test": "jest",
     "lint": "eslint ."
   },
