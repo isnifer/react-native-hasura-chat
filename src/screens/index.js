@@ -7,6 +7,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import colors from '@/constants/colors'
 import defaultScreenOptions from '@/constants/defaultScreenOptions'
 import useAuthToken from '@/hooks/useAuthToken'
+import arrayToString from '@/utils/arrayToString'
 import Toast from '@/components/Toast'
 import Splash from '@/components/Splash'
 
@@ -24,6 +25,7 @@ import HeaderGroupCreate from './GroupCreate/HeaderGroupCreate'
 
 import Calls from './Calls'
 import Call from './Call'
+import CallCreate from './CallCreate'
 
 import Search from './Search'
 import Profile from './Profile'
@@ -166,7 +168,7 @@ export default function App() {
               name="Chat"
               component={Chat}
               options={({ route: { params } }) => ({
-                title: `${params.opponent.firstName} ${params.opponent.lastName}`,
+                title: arrayToString([params.opponent.firstName, params.opponent.lastName], ' '),
               })}
             />
             <Stack.Screen
@@ -179,6 +181,7 @@ export default function App() {
               component={Call}
               options={({ route: { params } }) => ({ title: params.name })}
             />
+            <Stack.Screen name="CallCreate" component={CallCreate} />
             <Stack.Screen name="Search" component={Search} />
             <Stack.Screen
               name="GroupCreate"

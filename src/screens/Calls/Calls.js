@@ -8,6 +8,7 @@ import ListCalls from './ListCalls'
 const CALLS = gql`
   query UserCalls($userId: uuid!) {
     calls: calls_users(where: { user_id: { _eq: $userId } }) {
+      callId: call_id
       call {
         id
         name
@@ -30,8 +31,8 @@ export default function Calls({ navigation }) {
   const { loading, error, data, refetch } = useQuery(CALLS, { variables: { userId } })
   const calls = data?.calls ?? []
 
-  function handlePressItem({ name, photo, users, type }) {
-    navigation.navigate('Call', { name, photo, users, type })
+  function handlePressItem({ callId, name, photo, users, type }) {
+    navigation.navigate('Call', { callId, name, photo, users, type })
   }
 
   return (
