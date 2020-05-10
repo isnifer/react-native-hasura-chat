@@ -42,8 +42,8 @@ export default function ListChats({ navigation, handlePressItem, loading, error,
       contentContainerStyle={styles.listContent}
       keyExtractor={item => item.group.id}
       renderItem={({ item: { group } }) => {
-        const time = getRelativeTime()
-        const user = {}
+        const lastMessage = group.messages[0] || { text: '' }
+        const time = getRelativeTime(lastMessage.time)
 
         return (
           <TouchableOpacity
@@ -52,23 +52,22 @@ export default function ListChats({ navigation, handlePressItem, loading, error,
             style={styles.item}>
             <View style={styles.imageContainer}>
               <Image source={{ uri: group.picture }} style={styles.picture} />
-              {user.online && <View style={styles.status} />}
             </View>
             <View style={styles.textContent}>
               <View style={styles.text}>
                 <View style={styles.header}>
                   <Text style={styles.name}>{group.name}</Text>
-                  {user.unread && <View style={styles.unreadMarker} />}
+                  {group.unread && <View style={styles.unreadMarker} />}
                 </View>
                 <Text
-                  style={[styles.message, user.unread && styles.messageUnread]}
+                  style={[styles.message, group.unread && styles.messageUnread]}
                   numberOfLines={1}>
-                  {user.message || 'Last unread message'}
+                  {lastMessage.text || 'Last unread message'}
                 </Text>
               </View>
               <View style={styles.statuses}>
-                <Text style={[styles.time, user.unread && styles.messageUnread]}>{time}</Text>
-                <Text style={styles.typing}>{user.typing ? 'Typing...' : ''}</Text>
+                <Text style={[styles.time, group.unread && styles.messageUnread]}>{time}</Text>
+                <Text style={styles.typing}>{group.typing ? 'Typing...' : ''}</Text>
               </View>
             </View>
           </TouchableOpacity>
@@ -117,17 +116,6 @@ const styles = StyleSheet.create({
     width: 45,
     height: 45,
     borderRadius: 28,
-  },
-  status: {
-    position: 'absolute',
-    width: 15,
-    height: 15,
-    borderRadius: 8,
-    borderWidth: 2,
-    borderColor: colors.backgroundColor,
-    backgroundColor: colors.accent,
-    bottom: -1,
-    right: -1,
   },
   header: {
     flexDirection: 'row',

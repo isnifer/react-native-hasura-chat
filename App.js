@@ -12,6 +12,7 @@ const httpLink = createHttpLink({ uri: 'https://rn-hasura-chat-app.herokuapp.com
 const wsLink = new WebSocketLink({
   uri: 'ws://rn-hasura-chat-app.herokuapp.com/v1/graphql',
   options: {
+    lazy: true,
     reconnect: true,
     connectionParams: async () => {
       const { id } = getSyncProfile()

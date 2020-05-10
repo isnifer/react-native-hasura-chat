@@ -7,7 +7,6 @@ const DATA = [
   {
     id: 1,
     name: 'Diana Smiley',
-    message: 'Introducing yours identity',
     image: 'https://i.imgur.com/e7wQICs.jpg',
     unread: true,
     online: true,
@@ -21,7 +20,6 @@ const DATA = [
   {
     id: 3,
     name: 'Gracelyn Mason',
-    message: 'We met new users',
     image: 'https://i.imgur.com/CzwdPAk.jpg',
     unread: true,
     online: true,
@@ -46,7 +44,6 @@ const DATA = [
   {
     id: 7,
     name: 'Abella Danger',
-    message: 'Introducing yours identity',
     image: 'https://i.imgur.com/0Sd9PPp.jpg',
     unread: true,
     online: true,

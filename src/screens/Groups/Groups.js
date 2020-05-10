@@ -1,26 +1,37 @@
 import React from 'react'
 import { View, StyleSheet } from 'react-native'
-import { useQuery, gql } from '@apollo/client'
+import { useSubscription, gql } from '@apollo/client'
+import { orderBy } from 'lodash'
 import { getSyncProfile } from '@/utils/auth/syncProfile'
 import colors from '@/constants/colors'
 import ListGroups from './ListGroups'
 
 const GROUPS = gql`
-  query UserGroups($userId: uuid!) {
+  subscription UserGroups($userId: uuid!) {
     groups: groups_users(where: { user_id: { _eq: $userId } }) {
       group {
         id
         name
         picture
+        messages(order_by: { time: desc }, limit: 1) {
+          text
+          time
+          userId: user_id
+        }
       }
     }
   }
 `
 
+function extractLastMessageTime(item) {
+  return item?.group.messages[0]?.time ?? ''
+}
+
 export default function Groups({ navigation }) {
   const { id: userId } = getSyncProfile()
-  const { loading, error, data, refetch } = useQuery(GROUPS, { variables: { userId } })
-  const groups = data?.groups ?? []
+  const { loading, error, data, refetch } = useSubscription(GROUPS, { variables: { userId } })
+  const rawGroups = data?.groups ?? []
+  const groups = orderBy(rawGroups, extractLastMessageTime, 'desc')
 
   function handlePressItem({ group }) {
     navigation.navigate('GroupChat', { group, userId, picture: group.picture })

@@ -1,7 +1,16 @@
 import React, { useState } from 'react'
-import { View, Text, TextInput, StyleSheet } from 'react-native'
-import { KeyboardAwareFlatList } from 'react-native-keyboard-aware-scroll-view'
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  FlatList,
+  Animated,
+  StyleSheet,
+} from 'react-native'
 import { useSubscription, useMutation, gql } from '@apollo/client'
+import useKeyboardAvoid from '@/hooks/useKeyboardAvoid'
 import { getSyncProfile } from '@/utils/auth/syncProfile'
 import colors from '@/constants/colors'
 import Spinner from '@/components/Spinner'
@@ -9,7 +18,7 @@ import Spacer from '@/components/Spacer'
 
 const LOAD_MESSAGES = gql`
   subscription LoadMessages($chatId: uuid!) {
-    messages: chats_messages(where: { chat_id: { _eq: $chatId } }) {
+    messages: chats_messages(where: { chat_id: { _eq: $chatId } }, order_by: { time: desc }) {
       id
       text
       userId: user_id
@@ -37,11 +46,14 @@ export default function Chat({ route }) {
   const [message, setMessage] = useState('')
   const { loading, error, data } = useSubscription(LOAD_MESSAGES, { variables: { chatId } })
   const [sendMessage] = useMutation(SEND_MESSAGE)
+  const { animatedView, animatedHeight } = useKeyboardAvoid()
 
   function handleAddMessage({ nativeEvent: { text } }) {
     sendMessage({ variables: { chatId, userId: USER_ID, text } })
     setMessage('')
   }
+
+  function handlePressPlusButton() {}
 
   if (loading) {
     return (
@@ -63,51 +75,57 @@ export default function Chat({ route }) {
 
   return (
     <View style={styles.container}>
-      <KeyboardAwareFlatList
-        extraScrollHeight={15}
-        data={messages}
-        style={styles.list}
-        contentContainerStyle={styles.listContent}
-        keyExtractor={item => item.id}
-        ListFooterComponent={
-          <View>
-            <Spacer auto />
-            <TextInput
-              value={message}
-              numberOfLines={10}
-              blurOnSubmit={false}
-              enablesReturnKeyAutomatically
-              onSubmitEditing={handleAddMessage}
-              clearButtonMode="while-editing"
-              placeholder="Type your message"
-              placeholderTextColor={colors.textSecondary}
-              returnKeyType="send"
-              returnKeyLabel="send"
-              onChangeText={setMessage}
-              style={styles.textInput}
-            />
-          </View>
-        }
-        renderItem={({ item: { text, userId }, index }) => {
-          const isThisLastMessageInBlock = data.messages[index + 1]?.userId !== userId
+      <Animated.View
+        ref={animatedView}
+        style={[styles.container, { marginBottom: animatedHeight }]}>
+        <FlatList
+          inverted
+          data={messages}
+          contentContainerStyle={styles.listContent}
+          keyExtractor={item => item.id}
+          renderItem={({ item: { text, userId }, index }) => {
+            const isThisLastMessageInBlock = data.messages[index + 1]?.userId !== userId
 
-          return (
-            <View>
-              <View
-                style={
-                  userId === opponent.id
-                    ? [styles.message, isThisLastMessageInBlock && styles.messageLast]
-                    : [styles.myMessage, isThisLastMessageInBlock && styles.myMessageLast]
-                }>
-                <Text style={userId === opponent.id ? styles.messageText : styles.myMessageText}>
-                  {text}
-                </Text>
+            return (
+              <View>
+                <View
+                  style={
+                    userId === opponent.id
+                      ? [styles.message, isThisLastMessageInBlock && styles.messageLast]
+                      : [styles.myMessage, isThisLastMessageInBlock && styles.myMessageLast]
+                  }>
+                  <Text style={userId === opponent.id ? styles.messageText : styles.myMessageText}>
+                    {text}
+                  </Text>
+                </View>
+                {isThisLastMessageInBlock && <Spacer small />}
               </View>
-              {isThisLastMessageInBlock && <Spacer small />}
-            </View>
-          )
-        }}
-      />
+            )
+          }}
+        />
+        <View style={styles.textInputContainer}>
+          <TouchableOpacity
+            activeOpacity={0.9}
+            style={styles.buttonPlus}
+            onPress={handlePressPlusButton}>
+            <Image source={require('./img/icon_plus.png')} style={styles.buttonPlusIcon} />
+          </TouchableOpacity>
+          <TextInput
+            value={message}
+            numberOfLines={10}
+            blurOnSubmit={false}
+            enablesReturnKeyAutomatically
+            onSubmitEditing={handleAddMessage}
+            clearButtonMode="while-editing"
+            placeholder="Type your message"
+            placeholderTextColor={colors.text}
+            returnKeyType="send"
+            returnKeyLabel="send"
+            onChangeText={setMessage}
+            style={styles.textInput}
+          />
+        </View>
+      </Animated.View>
     </View>
   )
 }
@@ -117,13 +135,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.backgroundColor,
   },
-  list: {
-    paddingHorizontal: 20,
-  },
   listContent: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    paddingVertical: 20,
+    padding: 20,
   },
   message: {
     alignSelf: 'flex-start',
@@ -163,7 +176,30 @@ const styles = StyleSheet.create({
     color: colors.text,
     textAlign: 'right',
   },
+  textInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderTopWidth: 1,
+    borderTopColor: colors.primary,
+  },
+  buttonPlus: {
+    width: 45,
+    height: 45,
+    backgroundColor: colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 23,
+    marginRight: 10,
+  },
+  buttonPlusIcon: {
+    width: 16,
+    height: 16,
+  },
   textInput: {
+    flex: 1,
     height: 45,
     fontSize: 15,
     color: colors.text,

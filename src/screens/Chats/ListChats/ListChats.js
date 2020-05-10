@@ -42,8 +42,9 @@ export default function ListChats({ navigation, handlePressItem, loading, error,
         style={styles.list}
         contentContainerStyle={styles.container}
         keyExtractor={item => item.chatId}
-        renderItem={({ item: { chatId, opponent } }) => {
-          const time = getRelativeTime(opponent.time)
+        renderItem={({ item: { chatId, opponent, chat } }) => {
+          const lastMessage = chat.messages[0] || { text: '' }
+          const time = getRelativeTime(lastMessage.time)
 
           return (
             <TouchableOpacity
@@ -65,7 +66,7 @@ export default function ListChats({ navigation, handlePressItem, loading, error,
                   <Text
                     style={[styles.message, opponent.unread && styles.messageUnread]}
                     numberOfLines={1}>
-                    {opponent.message || 'Last unread message'}
+                    {lastMessage.text}
                   </Text>
                 </View>
                 <View style={styles.statuses}>

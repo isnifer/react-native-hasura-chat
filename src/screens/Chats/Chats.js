@@ -1,13 +1,14 @@
 import React from 'react'
 import { View, StyleSheet } from 'react-native'
-import { useQuery, gql } from '@apollo/client'
+import { useSubscription, gql } from '@apollo/client'
+import { orderBy } from 'lodash'
 import colors from '@/constants/colors'
 import Stories from '@/components/Stories'
 import { getSyncProfile } from '@/utils/auth/syncProfile'
 import ListChats from './ListChats'
 
 const CHATS = gql`
-  query UserChats($userId: uuid!) {
+  subscription UserChats($userId: uuid!) {
     chats: chats_users(where: { user_id: { _eq: $userId } }) {
       chatId: chat_id
       opponent {
@@ -17,14 +18,26 @@ const CHATS = gql`
         firstName: first_name
         lastName: last_name
       }
+      chat {
+        messages(order_by: { time: desc }, limit: 1) {
+          text
+          time
+          userId: user_id
+        }
+      }
     }
   }
 `
 
+function extractLastMessageTime(item) {
+  return item?.chat.messages[0].time ?? ''
+}
+
 export default function Chats({ navigation }) {
   const { id: userId } = getSyncProfile()
-  const { loading, error, data, refetch } = useQuery(CHATS, { variables: { userId } })
-  const chats = data?.chats ?? []
+  const { loading, error, data, refetch } = useSubscription(CHATS, { variables: { userId } })
+  const rawChats = data?.chats ?? []
+  const chats = orderBy(rawChats, extractLastMessageTime, 'desc')
 
   function handlePressChat({ chatId, opponent }) {
     navigation.navigate('Chat', { chatId, opponent, picture: opponent.photo })

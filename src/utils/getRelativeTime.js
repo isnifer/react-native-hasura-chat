@@ -1,7 +1,16 @@
 import { distanceInWordsToNow } from 'date-fns'
 
 export default function getRelativeTime(time) {
-  return `${distanceInWordsToNow(time || '2020-04-19T17:20:00Z')} ago`
+  if (!time) {
+    return ''
+  }
+
+  const transformedTime = distanceInWordsToNow(time)
+  if (transformedTime === 'less than a minute') {
+    return 'less than a minute ago'
+  }
+
+  return `${transformedTime} ago`
     .replace('about', '')
     .replace(' minutes ', 'm ')
     .replace(' minute ', 'm ')

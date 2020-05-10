@@ -1,14 +1,23 @@
 import React, { useState } from 'react'
-import { View, Text, TextInput, Image, StyleSheet } from 'react-native'
-import { KeyboardAwareFlatList } from 'react-native-keyboard-aware-scroll-view'
+import {
+  View,
+  Text,
+  TextInput,
+  Image,
+  TouchableOpacity,
+  FlatList,
+  Animated,
+  StyleSheet,
+} from 'react-native'
 import { useSubscription, useMutation, gql } from '@apollo/client'
+import useKeyboardAvoid from '@/hooks/useKeyboardAvoid'
 import colors from '@/constants/colors'
 import Spinner from '@/components/Spinner'
 import Spacer from '@/components/Spacer'
 
 const LOAD_GROUP_MESSAGES = gql`
   subscription LoadGroupMessages($groupId: uuid!) {
-    messages: groups_messages(where: { group_id: { _eq: $groupId } }) {
+    messages: groups_messages(where: { group_id: { _eq: $groupId } }, order_by: { time: desc }) {
       id
       text
       time
@@ -51,10 +60,14 @@ export default function GroupChat({ route }) {
   const { loading, error, data } = useSubscription(LOAD_GROUP_MESSAGES, { variables: { groupId } })
   const [sendMessage] = useMutation(SEND_GROUP_MESSAGE)
 
+  const { animatedView, animatedHeight } = useKeyboardAvoid()
+
   function handleAddMessage({ nativeEvent: { text } }) {
     sendMessage({ variables: { groupId, userId, text } })
     setMessage('')
   }
+
+  function handlePressPlusButton() {}
 
   if (loading) {
     return (
@@ -76,69 +89,79 @@ export default function GroupChat({ route }) {
 
   return (
     <View style={styles.container}>
-      <KeyboardAwareFlatList
-        extraScrollHeight={15}
-        data={messages}
-        style={styles.list}
-        contentContainerStyle={styles.listContent}
-        keyExtractor={item => item.id}
-        ListFooterComponent={
-          <View>
-            <Spacer auto />
-            <TextInput
-              value={message}
-              numberOfLines={10}
-              blurOnSubmit={false}
-              enablesReturnKeyAutomatically
-              onSubmitEditing={handleAddMessage}
-              clearButtonMode="while-editing"
-              placeholder="Type your message"
-              placeholderTextColor={colors.textSecondary}
-              returnKeyType="send"
-              returnKeyLabel="send"
-              onChangeText={setMessage}
-              style={styles.textInput}
-            />
-          </View>
-        }
-        renderItem={({ item: { text, user }, index }) => {
-          const isThisLastMessageInBlock = data.messages[index + 1]?.user.id !== user.id
-          const isThisFirstMessageInBlock = data.messages[index - 1]?.user.id !== user.id
+      <Animated.View
+        ref={animatedView}
+        style={[styles.container, { marginBottom: animatedHeight }]}>
+        <FlatList
+          inverted
+          data={messages}
+          contentContainerStyle={styles.listContent}
+          keyExtractor={item => item.id}
+          renderItem={({ item: { text, user }, index }) => {
+            const isThisLastMessageInBlock = data.messages[index - 1]?.user.id !== user.id
+            const isThisFirstMessageInBlock = data.messages[index + 1]?.user.id !== user.id
 
-          return (
-            <View>
-              <View
-                style={[styles.messageContainer, user.id === userId && styles.myMessageContainer]}>
-                {isThisFirstMessageInBlock && (
-                  <Image
-                    source={{ uri: user.photo }}
-                    style={[styles.userPhoto, user.id === userId && styles.myPhoto]}
-                  />
-                )}
-                <View
-                  style={
-                    user.id !== userId
-                      ? [
-                          styles.message,
-                          isThisLastMessageInBlock && styles.messageLast,
-                          !isThisFirstMessageInBlock && styles.messageMargin,
-                        ]
-                      : [
-                          styles.myMessage,
-                          isThisLastMessageInBlock && styles.myMessageLast,
-                          !isThisFirstMessageInBlock && styles.myMessageMargin,
-                        ]
-                  }>
-                  <Text style={user.id !== userId ? styles.messageText : styles.myMessageText}>
-                    {text}
-                  </Text>
+            const messageContainerStyles = [
+              styles.messageContainer,
+              user.id === userId && styles.myMessageContainer,
+            ]
+            const photoStyles = [styles.userPhoto, user.id === userId && styles.myPhoto]
+            const opponentMessageStyles = [
+              styles.message,
+              // Check inverted
+              isThisFirstMessageInBlock && styles.messageLast,
+              !isThisLastMessageInBlock && styles.messageMargin,
+            ]
+            const myMessageStyles = [
+              styles.myMessage,
+              // Check inverted
+              isThisFirstMessageInBlock && styles.myMessageLast,
+              !isThisLastMessageInBlock && styles.myMessageMargin,
+            ]
+
+            return (
+              <View>
+                <View style={messageContainerStyles}>
+                  {isThisLastMessageInBlock && (
+                    <Image source={{ uri: user.photo }} style={photoStyles} />
+                  )}
+                  <View style={user.id !== userId ? opponentMessageStyles : myMessageStyles}>
+                    <Text style={user.id !== userId ? styles.messageText : styles.myMessageText}>
+                      {text}
+                    </Text>
+                  </View>
                 </View>
+                {isThisLastMessageInBlock && <Spacer small />}
               </View>
-              {isThisLastMessageInBlock && <Spacer small />}
-            </View>
-          )
-        }}
-      />
+            )
+          }}
+        />
+        <View style={styles.textInputContainer}>
+          <TouchableOpacity
+            activeOpacity={0.9}
+            style={styles.buttonPlus}
+            onPress={handlePressPlusButton}>
+            <Image
+              source={require('@/screens/Chat/img/icon_plus.png')}
+              style={styles.buttonPlusIcon}
+            />
+          </TouchableOpacity>
+          <TextInput
+            value={message}
+            numberOfLines={10}
+            blurOnSubmit={false}
+            enablesReturnKeyAutomatically
+            onSubmitEditing={handleAddMessage}
+            clearButtonMode="while-editing"
+            placeholder="Type your message"
+            placeholderTextColor={colors.text}
+            returnKeyType="send"
+            returnKeyLabel="send"
+            onChangeText={setMessage}
+            style={styles.textInput}
+          />
+        </View>
+      </Animated.View>
     </View>
   )
 }
@@ -148,13 +171,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.backgroundColor,
   },
-  list: {
-    paddingHorizontal: 20,
-  },
   listContent: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    paddingVertical: 20,
+    paddingTop: 0,
+    paddingBottom: 10,
+    paddingHorizontal: 20,
   },
   messageContainer: {
     flexDirection: 'row',
@@ -163,10 +183,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row-reverse',
   },
   message: {
+    maxWidth: '70%',
     alignSelf: 'flex-start',
     backgroundColor: colors.primary,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
+    paddingRight: 24,
+    paddingLeft: 16,
+    paddingTop: 8,
+    paddingBottom: 10,
     marginBottom: 3,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 30,
@@ -179,13 +202,15 @@ const styles = StyleSheet.create({
   messageText: {
     fontSize: 16,
     color: colors.text,
-    textAlign: 'left',
   },
   myMessage: {
+    maxWidth: '70%',
     alignSelf: 'flex-end',
     backgroundColor: colors.accent,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
+    paddingLeft: 24,
+    paddingRight: 16,
+    paddingTop: 8,
+    paddingBottom: 10,
     marginBottom: 3,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 10,
@@ -204,7 +229,6 @@ const styles = StyleSheet.create({
   myMessageText: {
     fontSize: 16,
     color: colors.text,
-    textAlign: 'right',
   },
   userPhoto: {
     width: 30,
@@ -217,7 +241,30 @@ const styles = StyleSheet.create({
     marginRight: 0,
     marginLeft: 5,
   },
+  textInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderTopWidth: 1,
+    borderTopColor: colors.primary,
+  },
+  buttonPlus: {
+    width: 45,
+    height: 45,
+    backgroundColor: colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 23,
+    marginRight: 10,
+  },
+  buttonPlusIcon: {
+    width: 16,
+    height: 16,
+  },
   textInput: {
+    flex: 1,
     height: 45,
     fontSize: 15,
     color: colors.text,
