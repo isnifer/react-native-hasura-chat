@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
   listContent: {
     paddingTop: 0,
     paddingBottom: 10,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
   },
   messageContainer: {
     flexDirection: 'row',
@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     borderTopWidth: 1,
     borderTopColor: colors.primary,
   },

@@ -84,16 +84,20 @@ export default function Chat({ route }) {
           contentContainerStyle={styles.listContent}
           keyExtractor={item => item.id}
           renderItem={({ item: { text, userId }, index }) => {
-            const isThisLastMessageInBlock = data.messages[index + 1]?.userId !== userId
+            const isThisLastMessageInBlock = data.messages[index - 1]?.userId !== userId
+
+            const opponentMessageStyles = [
+              styles.message,
+              isThisLastMessageInBlock && styles.messageLast,
+            ]
+            const myMessageStyles = [
+              styles.myMessage,
+              isThisLastMessageInBlock && styles.myMessageLast,
+            ]
 
             return (
               <View>
-                <View
-                  style={
-                    userId === opponent.id
-                      ? [styles.message, isThisLastMessageInBlock && styles.messageLast]
-                      : [styles.myMessage, isThisLastMessageInBlock && styles.myMessageLast]
-                  }>
+                <View style={userId === opponent.id ? opponentMessageStyles : myMessageStyles}>
                   <Text style={userId === opponent.id ? styles.messageText : styles.myMessageText}>
                     {text}
                   </Text>
@@ -136,9 +140,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.backgroundColor,
   },
   listContent: {
-    padding: 20,
+    paddingTop: 0,
+    paddingBottom: 10,
+    paddingHorizontal: 10,
   },
   message: {
+    maxWidth: '90%',
     alignSelf: 'flex-start',
     backgroundColor: colors.primary,
     paddingHorizontal: 16,
@@ -158,6 +165,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
   },
   myMessage: {
+    maxWidth: '90%',
     alignSelf: 'flex-end',
     backgroundColor: colors.accent,
     paddingHorizontal: 16,
@@ -181,7 +189,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     borderTopWidth: 1,
     borderTopColor: colors.primary,
   },
