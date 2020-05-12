@@ -33,7 +33,7 @@ export default function useAuthToken() {
         setInitializing(false)
       }
 
-      if (!nextUser.displayName) {
+      if (nextUser.displayName) {
         return setUnauthReason('Please, now Create a Profile')
       }
 

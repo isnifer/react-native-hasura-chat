@@ -60,7 +60,7 @@ export default function GroupChat({ route }) {
   const { loading, error, data } = useSubscription(LOAD_GROUP_MESSAGES, { variables: { groupId } })
   const [sendMessage] = useMutation(SEND_GROUP_MESSAGE)
 
-  const { animatedView, animatedHeight } = useKeyboardAvoid()
+  const { animatedHeight } = useKeyboardAvoid()
 
   function handleAddMessage({ nativeEvent: { text } }) {
     sendMessage({ variables: { groupId, userId, text } })
@@ -89,9 +89,7 @@ export default function GroupChat({ route }) {
 
   return (
     <View style={styles.container}>
-      <Animated.View
-        ref={animatedView}
-        style={[styles.container, { marginBottom: animatedHeight }]}>
+      <Animated.View style={[styles.container, { marginBottom: animatedHeight }]}>
         <FlatList
           inverted
           data={messages}

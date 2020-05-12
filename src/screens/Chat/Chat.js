@@ -46,7 +46,7 @@ export default function Chat({ route }) {
   const [message, setMessage] = useState('')
   const { loading, error, data } = useSubscription(LOAD_MESSAGES, { variables: { chatId } })
   const [sendMessage] = useMutation(SEND_MESSAGE)
-  const { animatedView, animatedHeight } = useKeyboardAvoid()
+  const { animatedHeight } = useKeyboardAvoid()
 
   function handleAddMessage({ nativeEvent: { text } }) {
     sendMessage({ variables: { chatId, userId: USER_ID, text } })
@@ -75,9 +75,7 @@ export default function Chat({ route }) {
 
   return (
     <View style={styles.container}>
-      <Animated.View
-        ref={animatedView}
-        style={[styles.container, { marginBottom: animatedHeight }]}>
+      <Animated.View style={[styles.container, { marginBottom: animatedHeight }]}>
         <FlatList
           inverted
           data={messages}

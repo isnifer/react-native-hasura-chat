@@ -13,8 +13,13 @@ const nativeLog = console.log
 console.log = (...args) => {
   nativeLog.call(null, ...args)
 
+  let name = 'CONSOLE.LOG'
+  if (typeof args[0] === 'string' && !args[0].startsWith('Running "ChatRn"')) {
+    name = args[0] // eslint-disable-line
+  }
+
   client.display({
-    name: 'CONSOLE.LOG',
+    name,
     important: true,
     value: args,
     preview: args,

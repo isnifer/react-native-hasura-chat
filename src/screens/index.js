@@ -127,7 +127,7 @@ export default function App() {
 
   useEffect(() => {
     if (unauthReason && toastRef.current && toastRef.current.show) {
-      toastRef.current.show(unauthReason, 10000)
+      toastRef.current.show(unauthReason, 5000)
     }
   }, [unauthReason])
 

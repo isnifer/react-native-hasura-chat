@@ -30,7 +30,7 @@ const CHATS = gql`
 `
 
 function extractLastMessageTime(item) {
-  return item?.chat.messages[0].time ?? ''
+  return item.chat.messages[0]?.time ?? ''
 }
 
 export default function Chats({ navigation }) {

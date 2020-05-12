@@ -1,18 +1,14 @@
-import React from 'react'
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  ImageBackground,
-  SafeAreaView,
-  StyleSheet,
-} from 'react-native'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { useImmer } from 'use-immer'
+import React, { Fragment, useState, useRef } from 'react'
+import { View, Text, ImageBackground, SafeAreaView, Animated, StyleSheet } from 'react-native'
+import auth from '@react-native-firebase/auth'
+import { Form, Field } from 'react-final-form'
 import { useMutation, gql } from '@apollo/client'
+import useKeyboardAvoid from '@/hooks/useKeyboardAvoid'
 import { getSyncProfile } from '@/utils/auth/syncProfile'
+import arrayToString from '@/utils/arrayToString'
 import colors from '@/constants/colors'
+import { FormInput } from '@/components/Input'
+import Button from '@/components/Button'
 
 const CREATE_PROFILE = gql`
   mutation CreateProfile(
@@ -44,196 +40,171 @@ const CREATE_PROFILE = gql`
   }
 `
 
-export default function FillProfile({ route }) {
+const fieldsData = {
+  firstName: { label: 'First Name' },
+  lastName: { label: 'Last Name' },
+  username: { label: 'Username' },
+  photo: { label: 'Photo' },
+  bio: { label: 'Bio' },
+}
+
+const subscription = {
+  submitting: true,
+  pristine: true,
+  invalid: true,
+}
+
+function isRequired(value, allValues, meta) {
+  return value ? undefined : `${meta.data?.label ?? 'This Field'} is Required`
+}
+
+// export default function FillProfile({ route }) {
+export default function FillProfile() {
+  const [formHeight, setFormHeight] = useState()
+  const [focusedInputPosition, setFocusedInputPosition] = useState(0)
+  // const focusedInputPosition = useRef(0)
+  const { animatedHeight } = useKeyboardAvoid(focusedInputPosition)
+
   const { id, phoneNumber: phone } = getSyncProfile()
-  const [person, updatePerson] = useImmer({
-    firstName: '',
-    lastName: '',
-    username: '',
-    photo: '',
-    bio: '',
-  })
-
-  function updateField(field, value) {
-    updatePerson(draft => {
-      draft[field] = value
-    })
-  }
-
   const [createProfile] = useMutation(CREATE_PROFILE)
 
-  // TODO — UPDATE FIREBASE USER PROFILE
-  async function handleCreateProfile() {
+  async function handleCreateProfile(values) {
     try {
-      await createProfile({ variables: { ...person, id, phone } })
-      route.params.setUnauthReason(null)
+      // Create New User in Hasura DB
+      await createProfile({ variables: { ...values, id, phone } })
+
+      // Update Firebase User Profile
+      await auth().currentUser.updateProfile({
+        displayName: arrayToString([values.firstName, values.lastName], ' '),
+        photoURL: values.photo,
+      })
+
+      // Switch to Application Screen
+      // route.params.setUnauthReason(null)
     } catch (error) {
-      route.params.setUnauthReason('Please authenticate')
+      // route.params.setUnauthReason('Please authenticate')
+    }
+  }
+
+  function handleInputFocus(orderNumber, extra = 0) {
+    setFocusedInputPosition(formHeight - 30 - 40 - 20 - 45 - 30 + orderNumber * (45 + 10) + extra)
+  }
+
+  function handleFormLayout(formNode) {
+    if (!formHeight) {
+      setFormHeight(formNode.nativeEvent.layout.height)
     }
   }
 
   return (
     <ImageBackground source={require('@/assets/img/splash.jpg')} style={styles.backgroundImage}>
-      <SafeAreaView style={styles.root}>
-        <View style={styles.logoContainer}>
-          <Text style={styles.logo}>Sophie Chat</Text>
-        </View>
-        <KeyboardAwareScrollView
-          extraScrollHeight={90}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollView}>
-          <View style={styles.spacer} />
-          <View style={styles.container}>
-            <Text style={styles.title}>Fill Your Profile</Text>
-            <View style={styles.buttons}>
-              <TextInput
-                value={person.firstName}
-                numberOfLines={1}
-                enablesReturnKeyAutomatically
-                clearButtonMode="while-editing"
-                placeholder="First Name*"
-                placeholderTextColor={colors.textSecondary}
-                returnKeyType="send"
-                returnKeyLabel="send"
-                onChangeText={value => updateField('firstName', value)}
-                style={styles.textInput}
-              />
-              <TextInput
-                value={person.lastName}
-                numberOfLines={1}
-                enablesReturnKeyAutomatically
-                clearButtonMode="while-editing"
-                placeholder="Last Name"
-                placeholderTextColor={colors.textSecondary}
-                returnKeyType="send"
-                returnKeyLabel="send"
-                onChangeText={value => updateField('lastName', value)}
-                style={styles.textInput}
-              />
-              <TextInput
-                value={person.username}
-                numberOfLines={1}
-                enablesReturnKeyAutomatically
-                clearButtonMode="while-editing"
-                placeholder="Username*"
-                placeholderTextColor={colors.textSecondary}
-                returnKeyType="send"
-                returnKeyLabel="send"
-                onChangeText={value => updateField('username', value)}
-                style={styles.textInput}
-              />
-              <TextInput
-                value={person.photo}
-                numberOfLines={1}
-                enablesReturnKeyAutomatically
-                clearButtonMode="while-editing"
-                placeholder="Photo*"
-                placeholderTextColor={colors.textSecondary}
-                returnKeyType="send"
-                returnKeyLabel="send"
-                onChangeText={value => updateField('photo', value)}
-                style={styles.textInput}
-              />
-              <TextInput
-                value={person.bio}
-                enablesReturnKeyAutomatically
-                clearButtonMode="while-editing"
-                placeholder="Bio"
-                placeholderTextColor={colors.textSecondary}
-                returnKeyType="send"
-                returnKeyLabel="send"
-                onChangeText={value => updateField('bio', value)}
-                style={styles.textInput}
-              />
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={handleCreateProfile}
-                style={styles.button}>
-                <Text style={styles.buttonTitle}>Create Your Profile</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </KeyboardAwareScrollView>
+      <SafeAreaView style={styles.container}>
+        <View style={{ height: 10, backgroundColor: 'red' }} />
+        <Animated.View
+          onLayout={handleFormLayout}
+          style={[styles.formContainer, { marginBottom: animatedHeight }]}>
+          <Text style={styles.title}>Fill Your Profile</Text>
+          <Form
+            onSubmit={handleCreateProfile}
+            subscription={subscription}
+            render={({ handleSubmit, submitting, pristine, invalid }) => (
+              <Fragment>
+                <View style={styles.form}>
+                  <Field
+                    name="firstName"
+                    data={fieldsData.firstName}
+                    component={FormInput}
+                    placeholder={`${fieldsData.firstName.label} *`}
+                    validate={isRequired}
+                    onInputFocus={() => handleInputFocus(0)}
+                  />
+                  <Field
+                    name="lastName"
+                    data={fieldsData.lastName}
+                    component={FormInput}
+                    placeholder={fieldsData.lastName.label}
+                    enablesReturnKeyAutomatically={false}
+                    onInputFocus={() => handleInputFocus(1)}
+                  />
+                  <Field
+                    name="username"
+                    component={FormInput}
+                    validate={isRequired}
+                    data={fieldsData.username}
+                    placeholder={`${fieldsData.username.label} *`}
+                    autoCorrect={false}
+                    autoCapitalize="none"
+                    onInputFocus={() => handleInputFocus(2, -95)}
+                  />
+                  <Field
+                    name="photo"
+                    component={FormInput}
+                    validate={isRequired}
+                    data={fieldsData.photo}
+                    placeholder={`${fieldsData.photo.label} *`}
+                    autoCorrect={false}
+                    autoCapitalize="none"
+                    onInputFocus={() => handleInputFocus(3, -95)}
+                  />
+                  <Field
+                    name="bio"
+                    data={fieldsData.bio}
+                    component={FormInput}
+                    placeholder={fieldsData.bio.label}
+                    enablesReturnKeyAutomatically={false}
+                    onInputFocus={() => handleInputFocus(4, 45)}
+                  />
+                </View>
+                <Button
+                  title="Create Your Profile"
+                  disabled={invalid || pristine || submitting}
+                  onPress={handleSubmit}
+                />
+              </Fragment>
+            )}
+          />
+        </Animated.View>
       </SafeAreaView>
     </ImageBackground>
   )
 }
 
+// <View style={styles.logoContainer}>
+//   <Text style={styles.logo}>Sophie Chat</Text>
+// </View>
+
 const styles = StyleSheet.create({
-  root: {
+  backgroundImage: StyleSheet.absoluteFillObject,
+  container: {
     flex: 1,
+    flexDirection: 'column',
     justifyContent: 'space-between',
-    position: 'relative',
-  },
-  backgroundImage: {
-    ...StyleSheet.absoluteFillObject,
   },
   logoContainer: {
-    position: 'absolute',
-    alignItems: 'center',
-    width: '100%',
+    // position: 'absolute',
+    // alignItems: 'center',
+    // width: '100%',
   },
   logo: {
-    fontSize: 48,
-    fontWeight: '700',
-    color: colors.text,
-    marginTop: 50,
+    // fontSize: 48,
+    // fontWeight: '700',
+    // color: colors.text,
+    // marginTop: 50,
   },
-  scrollView: {
-    flexGrow: 1,
-  },
-  container: {
+  formContainer: {
     backgroundColor: colors.primary,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    paddingTop: 30,
+    paddingVertical: 30,
     paddingHorizontal: 38,
-    height: '100%',
-    marginTop: '50%',
   },
   title: {
     fontSize: 40,
     fontWeight: 'bold',
     color: colors.text,
   },
-  buttons: {
+  form: {
     marginTop: 20,
-  },
-  button: {
-    height: 47,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.button,
-    borderRadius: 30,
-    marginTop: 20,
-    position: 'relative',
-  },
-  buttonDisabled: {
-    opacity: 0.4,
-  },
-  buttonTitle: {
-    flex: 1,
-    fontSize: 18,
-    fontWeight: '500',
-    color: colors.text,
-    textAlign: 'center',
-  },
-  buttonLogo: {
-    width: 45,
-    height: 45,
-    position: 'absolute',
-    top: 0,
-    left: 1,
-  },
-  textInput: {
-    height: 45,
-    fontSize: 15,
-    color: colors.text,
-    backgroundColor: colors.inputSearch,
-    paddingHorizontal: 22,
-    paddingTop: 12,
-    paddingBottom: 10,
-    borderRadius: 30,
-    marginBottom: 10,
+    marginBottom: 24,
   },
 })
