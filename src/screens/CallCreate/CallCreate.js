@@ -8,7 +8,7 @@ import { getSyncProfile } from '@/utils/auth/syncProfile'
 import ListSearch from '@/screens/Search/ListSearch'
 
 const USERS = gql`
-  query Users($userId: uuid!) {
+  query Users($userId: String!) {
     users(where: { id: { _neq: $userId } }) {
       id
       photo
@@ -19,7 +19,7 @@ const USERS = gql`
 `
 
 const LOAD_CALLS = gql`
-  query LoadCalls($userId: uuid!) {
+  query LoadCalls($userId: String!) {
     calls: calls_users(where: { _and: [{ user_id: { _eq: $userId } }] }) {
       callId: call_id
       call {
@@ -47,7 +47,7 @@ const CREATE_CALL = gql`
 `
 
 const ADD_USERS_TO_CHAT = gql`
-  mutation AddUsersToCall($callId: uuid!, $userId: uuid!, $opponentId: uuid!) {
+  mutation AddUsersToCall($callId: uuid!, $userId: String!, $opponentId: String!) {
     insert_calls_users(
       objects: [{ call_id: $callId, user_id: $userId }, { call_id: $callId, user_id: $opponentId }]
     ) {

@@ -8,7 +8,7 @@ import { getSyncProfile } from '@/utils/auth/syncProfile'
 import ListChats from './ListChats'
 
 const CHATS = gql`
-  subscription UserChats($userId: uuid!) {
+  subscription UserChats($userId: String!) {
     chats: chats_users(where: { user_id: { _eq: $userId } }) {
       chatId: chat_id
       opponent {

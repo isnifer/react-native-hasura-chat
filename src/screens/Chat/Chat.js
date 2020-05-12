@@ -27,7 +27,7 @@ const LOAD_MESSAGES = gql`
 `
 
 const SEND_MESSAGE = gql`
-  mutation SendMessage($chatId: uuid!, $userId: uuid, $text: String!) {
+  mutation SendMessage($chatId: uuid!, $userId: String!, $text: String!) {
     insert_chats_messages(objects: { chat_id: $chatId, user_id: $userId, text: $text }) {
       returning {
         id

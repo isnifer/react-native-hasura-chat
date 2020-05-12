@@ -8,7 +8,7 @@ import colors from '@/constants/colors'
 import ListGroupCreate from './ListGroupCreate'
 
 const USERS = gql`
-  query Users($userId: uuid!, $query: String) {
+  query Users($userId: String!, $query: String) {
     users(
       where: {
         _and: [

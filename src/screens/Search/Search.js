@@ -6,7 +6,7 @@ import colors from '@/constants/colors'
 import ListSearch from './ListSearch'
 
 const USERS = gql`
-  query Users($userId: uuid!) {
+  query Users($userId: String!) {
     users(where: { id: { _neq: $userId } }) {
       id
       photo
@@ -17,7 +17,7 @@ const USERS = gql`
 `
 
 const LOAD_CONVERSATION = gql`
-  query LoadConversation($userId: uuid!, $opponentId: uuid!) {
+  query LoadConversation($userId: String!, $opponentId: String!) {
     chats: chats_users(
       where: { _and: [{ user_id: { _eq: $userId } }, { opponent_id: { _eq: $opponentId } }] }
     ) {
@@ -43,7 +43,7 @@ const CREATE_CHAT = gql`
 `
 
 const ADD_USERS_TO_CHAT = gql`
-  mutation AddUsersToChat($chatId: uuid!, $userId: uuid!, $opponentId: uuid!) {
+  mutation AddUsersToChat($chatId: uuid!, $userId: String!, $opponentId: String!) {
     insert_chats_users(
       objects: [
         { chat_id: $chatId, user_id: $userId, opponent_id: $opponentId }

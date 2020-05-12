@@ -2,7 +2,7 @@ import React from 'react'
 import {
   View,
   Text,
-  Image,
+  TextInput,
   TouchableOpacity,
   ImageBackground,
   SafeAreaView,
@@ -13,7 +13,7 @@ import useAuth from '@/hooks/useAuth'
 import colors from '@/constants/colors'
 
 export default function Login({ route }) {
-  const { login, google } = useAuth(route.params)
+  const { phone, setPhone, code, setCode, signInWithPhoneNumber } = useAuth(route.params)
 
   return (
     <ImageBackground source={require('@/assets/img/splash.jpg')} style={styles.backgroundImage}>
@@ -22,19 +22,42 @@ export default function Login({ route }) {
           <Text style={styles.logo}>Sophie Chat</Text>
         </View>
         <KeyboardAwareScrollView
+          extraScrollHeight={90}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollView}>
           <View style={styles.spacer} />
           <View style={styles.container}>
             <Text style={styles.title}>Get Login</Text>
             <View style={styles.buttons}>
-              <TouchableOpacity activeOpacity={0.8} onPress={login} style={styles.button}>
-                <Image source={require('./img/Auth0.png')} style={styles.buttonLogo} />
-                <Text style={styles.buttonTitle}>Login via Auth0</Text>
-              </TouchableOpacity>
-              <TouchableOpacity activeOpacity={0.8} onPress={google} style={styles.button}>
-                <Image source={require('./img/Google.png')} style={styles.buttonLogo} />
-                <Text style={styles.buttonTitle}>Login via Google</Text>
+              <TextInput
+                value={phone}
+                numberOfLines={1}
+                enablesReturnKeyAutomatically
+                clearButtonMode="while-editing"
+                placeholder="+7 999 999-99-99"
+                placeholderTextColor={colors.textSecondary}
+                returnKeyType="send"
+                returnKeyLabel="send"
+                onChangeText={setPhone}
+                style={styles.textInput}
+              />
+              <TextInput
+                value={code}
+                numberOfLines={1}
+                enablesReturnKeyAutomatically
+                clearButtonMode="while-editing"
+                placeholder="999999"
+                placeholderTextColor={colors.textSecondary}
+                returnKeyType="send"
+                returnKeyLabel="send"
+                onChangeText={setCode}
+                style={styles.textInput}
+              />
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={signInWithPhoneNumber}
+                style={styles.button}>
+                <Text style={styles.buttonTitle}>Get verification code</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -88,7 +111,7 @@ const styles = StyleSheet.create({
     height: 47,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#10557F',
+    backgroundColor: colors.button,
     borderRadius: 30,
     marginTop: 20,
     position: 'relative',
@@ -116,7 +139,7 @@ const styles = StyleSheet.create({
     color: colors.text,
     backgroundColor: colors.inputSearch,
     paddingHorizontal: 22,
-    paddingTop: 13,
+    paddingTop: 12,
     paddingBottom: 10,
     borderRadius: 30,
     marginBottom: 10,

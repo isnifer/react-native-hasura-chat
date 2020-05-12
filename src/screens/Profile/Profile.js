@@ -2,11 +2,12 @@ import React from 'react'
 import { View, Text, Image, StyleSheet } from 'react-native'
 import { useQuery, gql } from '@apollo/client'
 import { getSyncProfile } from '@/utils/auth/syncProfile'
+import formatPhone from '@/utils/formatPhone'
 import colors from '@/constants/colors'
 import Spinner from '@/components/Spinner'
 
 const LOAD_USER = gql`
-  query UserProfile($userId: uuid!) {
+  query UserProfile($userId: String!) {
     profile: users_by_pk(id: $userId) {
       id
       bio
@@ -56,7 +57,7 @@ export default function Profile() {
         </View>
         <View style={styles.item}>
           <Text style={styles.label}>Phone</Text>
-          <Text style={styles.value}>{profile.phone}</Text>
+          <Text style={styles.value}>{formatPhone(profile.phone)}</Text>
         </View>
         <View style={styles.item}>
           <Text style={styles.label}>Username</Text>

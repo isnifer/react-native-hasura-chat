@@ -13,6 +13,7 @@ import Splash from '@/components/Splash'
 
 // Screens
 import Login from './Login'
+import FillProfile from './FillProfile'
 
 import Chats from './Chats'
 import Chat from './Chat'
@@ -69,16 +70,14 @@ const renderTab = ({ name, component }) => (
   />
 )
 
+const ChatsTabs = () => (
+  <TopTab.Navigator tabBarOptions={topTabBarOptions}>{TOP_TABS.map(renderTab)}</TopTab.Navigator>
+)
+
 function Home() {
   return (
     <Stack.Navigator initialRouteName="Chats" headerMode="none">
-      <Stack.Screen name="Chats">
-        {() => (
-          <TopTab.Navigator tabBarOptions={topTabBarOptions}>
-            {TOP_TABS.map(renderTab)}
-          </TopTab.Navigator>
-        )}
-      </Stack.Screen>
+      <Stack.Screen name="Chats" component={ChatsTabs} />
     </Stack.Navigator>
   )
 }
@@ -104,17 +103,35 @@ const tabBarScreenOptions = ({ route }) => ({
   ),
 })
 
+const HomeSettings = () => (
+  <Stack.Navigator initialRouteName="Settings" screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="Settings" component={Settings} />
+    <Stack.Screen name="Settings.ChatCustomize" component={SettingsChatCustomize} />
+  </Stack.Navigator>
+)
+
+const HomeScreen = () => (
+  <Tab.Navigator
+    initialRouteName="Home.Chats"
+    screenOptions={tabBarScreenOptions}
+    tabBarOptions={tabBarOptions}>
+    <Tab.Screen name="Home.Profile" component={Profile} />
+    <Tab.Screen name="Home.Chats" component={Home} />
+    <Tab.Screen name="Home.Settings" component={HomeSettings} />
+  </Tab.Navigator>
+)
+
 export default function App() {
-  const { loading, unauthReason, handleSuccessLogin, handleSuccessLogout } = useAuthToken()
+  const { initializing, unauthReason, setUnauthReason } = useAuthToken()
   const toastRef = useRef()
 
   useEffect(() => {
     if (unauthReason && toastRef.current && toastRef.current.show) {
-      toastRef.current.show(unauthReason, 1000)
+      toastRef.current.show(unauthReason, 10000)
     }
   }, [unauthReason])
 
-  if (loading) {
+  if (initializing) {
     return <Splash />
   }
 
@@ -133,37 +150,20 @@ export default function App() {
         initialRouteName="Home"
         screenOptions={unauthReason ? { headerShown: false } : defaultScreenOptions}>
         {unauthReason ? (
-          <Stack.Screen name="Login" component={Login} initialParams={{ handleSuccessLogin }} />
+          <Fragment>
+            {unauthReason === 'Please, now Create a Profile' ? (
+              <Stack.Screen
+                name="FillProfile"
+                component={FillProfile}
+                initialParams={{ setUnauthReason }}
+              />
+            ) : (
+              <Stack.Screen name="Login" component={Login} initialParams={{ setUnauthReason }} />
+            )}
+          </Fragment>
         ) : (
           <Fragment>
-            <Stack.Screen name="Home" options={{ title: 'All Chats' }}>
-              {() => (
-                <Tab.Navigator
-                  initialRouteName="Home.Chats"
-                  screenOptions={tabBarScreenOptions}
-                  tabBarOptions={tabBarOptions}>
-                  <Tab.Screen name="Home.Profile" component={Profile} />
-                  <Tab.Screen name="Home.Chats" component={Home} />
-                  <Tab.Screen name="Home.Settings" options={{ handleSuccessLogout }}>
-                    {() => (
-                      <Stack.Navigator
-                        initialRouteName="Settings"
-                        screenOptions={{ headerShown: false }}>
-                        <Stack.Screen
-                          name="Settings"
-                          component={Settings}
-                          initialParams={{ handleSuccessLogout }}
-                        />
-                        <Stack.Screen
-                          name="Settings.ChatCustomize"
-                          component={SettingsChatCustomize}
-                        />
-                      </Stack.Navigator>
-                    )}
-                  </Tab.Screen>
-                </Tab.Navigator>
-              )}
-            </Stack.Screen>
+            <Stack.Screen name="Home" options={{ title: 'All Chats' }} component={HomeScreen} />
             <Stack.Screen
               name="Chat"
               component={Chat}

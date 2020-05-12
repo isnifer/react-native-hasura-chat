@@ -6,7 +6,7 @@ import colors from '@/constants/colors'
 import ListCalls from './ListCalls'
 
 const CALLS = gql`
-  query UserCalls($userId: uuid!) {
+  query UserCalls($userId: String!) {
     calls: calls_users(where: { user_id: { _eq: $userId } }) {
       callId: call_id
       call {

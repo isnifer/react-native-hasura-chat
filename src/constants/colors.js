@@ -8,4 +8,5 @@ export default {
   inputSearch: 'hsla(0, 100%, 100%, 0.15)',
   link: '#007AFF',
   checkbox: '#434448',
+  button: '#2CB9B0',
 }

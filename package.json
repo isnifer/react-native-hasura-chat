@@ -2,6 +2,9 @@
   "name": "chat-rn",
   "version": "0.0.1",
   "private": true,
+  "engines": {
+    "node": "12"
+  },
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios --simulator='iPhone 8 Plus'",
@@ -11,13 +14,20 @@
     "android:build": "(cd android && ./gradlew assembleRelease)",
     "android:upload": "adb install -r ./android/app/build/outputs/apk/release/app-release.apk",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "gf:serve": "npm run serve --prefix functions",
+    "gf:shell": "npm run shell --prefix functions",
+    "gf:start": "npm run start --prefix functions",
+    "gf:deploy": "npm run deploy --prefix functions",
+    "gf:logs": "npm run logs --prefix functions"
   },
   "dependencies": {
     "@apollo/client": "^3.0.0-beta.43",
     "@apollo/link-ws": "^2.0.0-beta.3",
     "@react-native-community/async-storage": "^1.9.0",
     "@react-native-community/masked-view": "^0.1.9",
+    "@react-native-firebase/app": "^6.7.1",
+    "@react-native-firebase/auth": "^6.7.1",
     "@react-navigation/bottom-tabs": "^5.2.7",
     "@react-navigation/material-top-tabs": "^5.1.9",
     "@react-navigation/native": "^5.1.6",
@@ -25,6 +35,9 @@
     "apollo-link-context": "^1.0.20",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "date-fns": "^1.30.1",
+    "firebase-admin": "^8.12.1",
+    "firebase-functions": "^3.6.1",
+    "firebase-tools": "^8.2.0",
     "immer": "^6.0.3",
     "lodash": "^4.17.15",
     "prop-types": "^15.7.2",
@@ -50,6 +63,7 @@
     "@detools/eslint-config": "^1.2.0",
     "babel-jest": "^24.9.0",
     "eslint": "^6.5.1",
+    "firebase-functions-test": "^0.2.1",
     "jest": "^24.9.0",
     "metro-react-native-babel-preset": "^0.58.0",
     "prettier": "^2.0.4",

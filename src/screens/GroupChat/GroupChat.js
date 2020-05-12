@@ -33,7 +33,7 @@ const LOAD_GROUP_MESSAGES = gql`
 `
 
 const SEND_GROUP_MESSAGE = gql`
-  mutation SendGroupMessage($groupId: uuid!, $userId: uuid, $text: String!) {
+  mutation SendGroupMessage($groupId: uuid!, $userId: String!, $text: String!) {
     insert_groups_messages(objects: { group_id: $groupId, user_id: $userId, text: $text }) {
       returning {
         id

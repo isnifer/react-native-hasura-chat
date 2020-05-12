@@ -7,7 +7,7 @@ import colors from '@/constants/colors'
 import ListGroups from './ListGroups'
 
 const GROUPS = gql`
-  subscription UserGroups($userId: uuid!) {
+  subscription UserGroups($userId: String!) {
     groups: groups_users(where: { user_id: { _eq: $userId } }) {
       group {
         id
