@@ -29,7 +29,7 @@ export default function Login({ route }) {
             <View style={styles.buttons}>
               <Input value={phone} placeholder="+7 999 999-99-99" onChangeText={setPhone} />
             </View>
-            <Button title="Get verification code" onPress={handleSubmit} />
+            <Button disabled={!phone} title="Get verification code" onPress={handleSubmit} />
           </View>
         </KeyboardAwareScrollView>
       </SafeAreaView>
@@ -76,31 +76,5 @@ const styles = StyleSheet.create({
   },
   buttons: {
     marginVertical: 20,
-  },
-  button: {
-    height: 47,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.button,
-    borderRadius: 30,
-    marginTop: 20,
-    position: 'relative',
-  },
-  buttonDisabled: {
-    opacity: 0.4,
-  },
-  buttonTitle: {
-    flex: 1,
-    fontSize: 18,
-    fontWeight: '500',
-    color: colors.text,
-    textAlign: 'center',
-  },
-  buttonLogo: {
-    width: 45,
-    height: 45,
-    position: 'absolute',
-    top: 0,
-    left: 1,
   },
 })

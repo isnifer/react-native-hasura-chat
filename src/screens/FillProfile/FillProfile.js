@@ -1,9 +1,9 @@
-import React, { Fragment, useState } from 'react'
-import { View, Text, ImageBackground, SafeAreaView, Animated, StyleSheet } from 'react-native'
+import React, { Fragment } from 'react'
+import { View, Text, ImageBackground, SafeAreaView, StyleSheet } from 'react-native'
 import auth from '@react-native-firebase/auth'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { Form, Field } from 'react-final-form'
 import { useMutation, gql } from '@apollo/client'
-import useKeyboardAvoid from '@/hooks/useKeyboardAvoid'
 import { getSyncProfile } from '@/utils/auth/syncProfile'
 import arrayToString from '@/utils/arrayToString'
 import { UNAUTH_REASONS } from '@/constants'
@@ -60,10 +60,6 @@ function isRequired(value, allValues, meta) {
 }
 
 export default function FillProfile({ route }) {
-  const [formHeight, setFormHeight] = useState()
-  const [focusedInputPosition, setFocusedInputPosition] = useState(0)
-  const { animatedHeight } = useKeyboardAvoid(focusedInputPosition.current)
-
   const { id, phoneNumber: phone } = getSyncProfile()
   const [createProfile] = useMutation(CREATE_PROFILE)
 
@@ -85,83 +81,73 @@ export default function FillProfile({ route }) {
     }
   }
 
-  function handleInputFocus(orderNumber, extra = 0) {
-    setFocusedInputPosition(formHeight - 30 - 40 - 20 - 45 - 30 + orderNumber * (45 + 10) + extra)
-  }
-
-  function handleFormLayout(formNode) {
-    if (!formHeight) {
-      setFormHeight(formNode.nativeEvent.layout.height)
-    }
-  }
-
   return (
     <ImageBackground source={require('@/assets/img/splash.jpg')} style={styles.backgroundImage}>
       <SafeAreaView style={styles.container}>
-        <Animated.View
-          onLayout={handleFormLayout}
-          style={[styles.formContainer, { marginBottom: animatedHeight }]}>
-          <Text style={styles.title}>Fill Your Profile</Text>
-          <Form
-            onSubmit={handleCreateProfile}
-            subscription={subscription}
-            render={({ handleSubmit, submitting, pristine, invalid }) => (
-              <Fragment>
-                <View style={styles.form}>
-                  <Field
-                    name="firstName"
-                    data={fieldsData.firstName}
-                    component={FormInput}
-                    placeholder={`${fieldsData.firstName.label} *`}
-                    validate={isRequired}
-                    onInputFocus={() => handleInputFocus(0)}
+        <KeyboardAwareScrollView
+          extraScrollHeight={30}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollView}>
+          <View style={styles.formContainer}>
+            <View style={styles.emptyBlock} />
+            <Text style={styles.title}>Fill Your Profile</Text>
+            <Form
+              onSubmit={handleCreateProfile}
+              subscription={subscription}
+              render={({ handleSubmit, submitting, pristine, invalid }) => (
+                <Fragment>
+                  <View style={styles.form}>
+                    <Field
+                      name="firstName"
+                      data={fieldsData.firstName}
+                      component={FormInput}
+                      placeholder={`${fieldsData.firstName.label} *`}
+                      validate={isRequired}
+                    />
+                    <Field
+                      name="lastName"
+                      data={fieldsData.lastName}
+                      component={FormInput}
+                      placeholder={fieldsData.lastName.label}
+                      enablesReturnKeyAutomatically={false}
+                    />
+                    <Field
+                      name="username"
+                      component={FormInput}
+                      validate={isRequired}
+                      data={fieldsData.username}
+                      placeholder={`${fieldsData.username.label} *`}
+                      autoCorrect={false}
+                      autoCapitalize="none"
+                    />
+                    <Field
+                      name="photo"
+                      component={FormInput}
+                      validate={isRequired}
+                      data={fieldsData.photo}
+                      placeholder={`${fieldsData.photo.label} *`}
+                      autoCorrect={false}
+                      autoCapitalize="none"
+                    />
+                    <Field
+                      name="bio"
+                      data={fieldsData.bio}
+                      component={FormInput}
+                      placeholder={fieldsData.bio.label}
+                      enablesReturnKeyAutomatically={false}
+                    />
+                  </View>
+                  <Button
+                    title="Create Your Profile"
+                    disabled={invalid || pristine || submitting}
+                    onPress={handleSubmit}
                   />
-                  <Field
-                    name="lastName"
-                    data={fieldsData.lastName}
-                    component={FormInput}
-                    placeholder={fieldsData.lastName.label}
-                    enablesReturnKeyAutomatically={false}
-                    onInputFocus={() => handleInputFocus(1)}
-                  />
-                  <Field
-                    name="username"
-                    component={FormInput}
-                    validate={isRequired}
-                    data={fieldsData.username}
-                    placeholder={`${fieldsData.username.label} *`}
-                    autoCorrect={false}
-                    autoCapitalize="none"
-                    onInputFocus={() => handleInputFocus(2, -95)}
-                  />
-                  <Field
-                    name="photo"
-                    component={FormInput}
-                    validate={isRequired}
-                    data={fieldsData.photo}
-                    placeholder={`${fieldsData.photo.label} *`}
-                    autoCorrect={false}
-                    autoCapitalize="none"
-                    onInputFocus={() => handleInputFocus(3, -95)}
-                  />
-                  <Field
-                    name="bio"
-                    data={fieldsData.bio}
-                    component={FormInput}
-                    placeholder={fieldsData.bio.label}
-                    enablesReturnKeyAutomatically={false}
-                    onInputFocus={() => handleInputFocus(4, 45)}
-                  />
-                </View>
-                <Button
-                  title="Create Your Profile"
-                  disabled={invalid || pristine || submitting}
-                  onPress={handleSubmit}
-                />
-              </Fragment>
-            )}
-          />
-        </Animated.View>
+                </Fragment>
+              )}
+            />
+          </View>
+        </KeyboardAwareScrollView>
       </SafeAreaView>
     </ImageBackground>
   )
@@ -171,8 +157,10 @@ const styles = StyleSheet.create({
   backgroundImage: StyleSheet.absoluteFillObject,
   container: {
     flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
+  },
+  scrollView: {
+    flexGrow: 1,
   },
   formContainer: {
     backgroundColor: colors.primary,
@@ -180,6 +168,8 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     paddingVertical: 30,
     paddingHorizontal: 38,
+    height: '100%',
+    marginTop: '60%',
   },
   title: {
     fontSize: 40,
@@ -189,5 +179,9 @@ const styles = StyleSheet.create({
   form: {
     marginTop: 20,
     marginBottom: 24,
+  },
+  emptyBlock: {
+    height: 10,
+    backgroundColor: 'transparent',
   },
 })

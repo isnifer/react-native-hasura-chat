@@ -3,17 +3,17 @@ import { Text, TouchableOpacity, ViewPropTypes, StyleSheet } from 'react-native'
 import PropTypes from 'prop-types'
 import colors from '@/constants/colors'
 
-export default function Button(props) {
+export default function Button({ disabled, ...props }) {
   function handlePress(...args) {
-    if (props.disabled) {
-      return false
+    if (disabled) {
+      return props.onDisabled()
     }
 
     return props.onPress(...args)
   }
 
-  const activeOpacity = props.disabled ? props.disabledOpacity : props.activeOpacity
-  const buttonOpacity = props.disabled ? props.disabledOpacity : 1
+  const activeOpacity = disabled ? props.disabledOpacity : props.activeOpacity
+  const buttonOpacity = disabled ? props.disabledOpacity : 1
 
   if (props.custom) {
     const style = [{ opacity: buttonOpacity }, props.style]
@@ -28,6 +28,7 @@ export default function Button(props) {
       </TouchableOpacity>
     )
   }
+
   return (
     <TouchableOpacity
       {...props}
@@ -43,8 +44,9 @@ Button.propTypes = {
   disabled: PropTypes.bool,
   disabledOpacity: PropTypes.number,
   activeOpacity: PropTypes.number,
-  onPress: PropTypes.func,
   style: ViewPropTypes.style,
+  onPress: PropTypes.func,
+  onDisabled: PropTypes.func,
   custom: PropTypes.bool,
 }
 
@@ -52,8 +54,9 @@ Button.defaultProps = {
   disabled: false,
   disabledOpacity: 0.4,
   activeOpacity: 0.8,
-  onPress: () => {},
   style: {},
+  onPress: () => {},
+  onDisabled: () => {},
   custom: false,
 }
 
