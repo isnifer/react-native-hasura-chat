@@ -23,7 +23,6 @@ export default function useAuth({ setUnauthReason } = {}) {
   async function confirmVerificationCode(code) {
     try {
       await confirm.confirm(code)
-      setUnauthReason(null)
     } catch (e) {
       setUnauthReason(UNAUTH_REASONS.INVALID_VERIFICATION_CODE)
     }

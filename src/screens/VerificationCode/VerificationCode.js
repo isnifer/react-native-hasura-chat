@@ -44,7 +44,7 @@ const VerificationCodeInput = forwardRef((inputProps, ref) => {
 })
 
 export default function VerificationCode({ route }) {
-  const inputs = useRef(range(6).map(() => createRef()))
+  const inputs = useRef(range(6).map(order => ({ order, ref: createRef() })))
   const [verificationCode, setVerificationCode] = useImmer([])
   const [focused, setFocused] = useState(0)
   const [codeVerificationInProgress, setCodeVerification] = useState(false)
@@ -80,15 +80,14 @@ export default function VerificationCode({ route }) {
         </Text>
       </View>
       <View style={styles.inputsContainer}>
-        {inputs.current.map((ref, index) => (
-          <View style={[styles.inputWrapper, !index && styles.inputWrapperFirst]}>
+        {inputs.current.map(({ order, ref }, index) => (
+          <View key={order} style={[styles.inputWrapper, !index && styles.inputWrapperFirst]}>
             <VerificationCodeInput
-              key={index} // eslint-disable-line react/no-array-index-key
               ref={ref}
               index={index}
               autoFocus={!index}
-              nextInput={inputs.current[index + 1]}
-              prevInput={inputs.current[index - 1]}
+              nextInput={inputs.current[index + 1]?.ref}
+              prevInput={inputs.current[index - 1]?.ref}
               value={verificationCode[index]}
               setFocused={setFocused}
               handleChange={handleChange}

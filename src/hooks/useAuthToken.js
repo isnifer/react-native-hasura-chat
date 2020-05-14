@@ -33,7 +33,7 @@ export default function useAuthToken() {
       if (!nextUser.displayName) {
         setUnauthReason(UNAUTH_REASONS.FILL_PROFILE)
       } else {
-        handleSuccessLogin()
+        setUnauthReason(null)
       }
 
       if (initializing) {
@@ -48,15 +48,9 @@ export default function useAuthToken() {
     return subscriber // unsubscribe on unmount
   }, [])
 
-  function handleSuccessLogin() {
-    setUnauthReason(null)
-  }
-
   return {
-    user,
     initializing,
     unauthReason,
     setUnauthReason,
-    handleSuccessLogin,
   }
 }
