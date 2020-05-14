@@ -10,8 +10,6 @@ export default function useKeyboardAvoid(initialValue = 0) {
     let toValue = event.endCoordinates.height
     toValue = initialValue !== 0 ? initialValue - toValue : toValue
 
-    console.log(initialValue, toValue, event.endCoordinates.height)
-
     Animated.timing(animatedHeight, {
       toValue,
       duration: event.duration || DEFAULT_EVENT_DURATION,

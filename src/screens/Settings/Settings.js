@@ -3,11 +3,11 @@ import { View, Text, Image, TextInput, Switch, TouchableOpacity, StyleSheet } fr
 import colors from '@/constants/colors'
 import useAuth from '@/hooks/useAuth'
 
-export default function Settings({ navigation, route }) {
+export default function Settings({ navigation }) {
   const [searchValue, setSearchValue] = useState('')
   const [darkMode, setDarkMode] = useState(true)
   const [profileLock, setProfileLock] = useState(true)
-  const { logout } = useAuth(route.params)
+  const { logout } = useAuth()
 
   return (
     <View style={styles.container}>

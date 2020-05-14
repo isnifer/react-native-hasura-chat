@@ -10,4 +10,5 @@ export default {
   link: '#007AFF',
   checkbox: '#434448',
   button: '#2CB9B0',
+  subtitle: '#9A9CA4',
 }

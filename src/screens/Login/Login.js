@@ -1,13 +1,16 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { View, Text, ImageBackground, SafeAreaView, StyleSheet } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import useAuth from '@/hooks/useAuth'
 import colors from '@/constants/colors'
 import Input from '@/components/Input'
 import Button from '@/components/Button'
 
 export default function Login({ route }) {
-  const { phone, setPhone, code, setCode, signInWithPhoneNumber } = useAuth(route.params)
+  const [phone, setPhone] = useState('')
+
+  function handleSubmit() {
+    return route.params.getVerificationCode(phone)
+  }
 
   return (
     <ImageBackground source={require('@/assets/img/splash.jpg')} style={styles.backgroundImage}>
@@ -17,6 +20,7 @@ export default function Login({ route }) {
         </View>
         <KeyboardAwareScrollView
           extraScrollHeight={30}
+          keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollView}>
           <View style={styles.spacer} />
@@ -24,11 +28,8 @@ export default function Login({ route }) {
             <Text style={styles.title}>Get Login</Text>
             <View style={styles.buttons}>
               <Input value={phone} placeholder="+7 999 999-99-99" onChangeText={setPhone} />
-              <Input value={code} placeholder="999999" onChangeText={setCode} />
-              <Button onPress={signInWithPhoneNumber} style={styles.button}>
-                <Text style={styles.buttonTitle}>Get verification code</Text>
-              </Button>
             </View>
+            <Button title="Get verification code" onPress={handleSubmit} />
           </View>
         </KeyboardAwareScrollView>
       </SafeAreaView>
@@ -74,7 +75,7 @@ const styles = StyleSheet.create({
     color: colors.text,
   },
   buttons: {
-    marginTop: 20,
+    marginVertical: 20,
   },
   button: {
     height: 47,

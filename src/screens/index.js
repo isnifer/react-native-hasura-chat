@@ -4,15 +4,18 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
+import { UNAUTH_REASONS } from '@/constants'
 import colors from '@/constants/colors'
 import defaultScreenOptions from '@/constants/defaultScreenOptions'
 import useAuthToken from '@/hooks/useAuthToken'
+import useAuth from '@/hooks/useAuth'
 import arrayToString from '@/utils/arrayToString'
 import Toast from '@/components/Toast'
 import Splash from '@/components/Splash'
 
 // Screens
 import Login from './Login'
+import VerificationCode from './VerificationCode'
 import FillProfile from './FillProfile'
 
 import Chats from './Chats'
@@ -71,7 +74,9 @@ const renderTab = ({ name, component }) => (
 )
 
 const ChatsTabs = () => (
-  <TopTab.Navigator tabBarOptions={topTabBarOptions}>{TOP_TABS.map(renderTab)}</TopTab.Navigator>
+  <TopTab.Navigator lazy tabBarOptions={topTabBarOptions}>
+    {TOP_TABS.map(renderTab)}
+  </TopTab.Navigator>
 )
 
 function Home() {
@@ -121,18 +126,67 @@ const HomeScreen = () => (
   </Tab.Navigator>
 )
 
-export default function App() {
-  const { initializing, unauthReason, setUnauthReason } = useAuthToken()
+export default function Screens({ wsClient }) {
+  const { initializing, unauthReason, setUnauthReason } = useAuthToken(wsClient)
+  const { getVerificationCode, confirmVerificationCode } = useAuth({ setUnauthReason })
+
   const toastRef = useRef()
 
   useEffect(() => {
-    if (unauthReason && toastRef.current && toastRef.current.show) {
-      toastRef.current.show(unauthReason, 5000)
+    if (
+      // Check element
+      toastRef.current &&
+      // Check element show method
+      toastRef.current.show &&
+      // Check reason
+      unauthReason &&
+      // Exclude one reason from notifications
+      unauthReason !== UNAUTH_REASONS.VERIFICATION_CODE
+    ) {
+      toastRef.current.show(unauthReason, 3000)
     }
   }, [unauthReason])
 
   if (initializing) {
     return <Splash />
+  }
+
+  let UnauthScreen
+  switch (unauthReason) {
+    case UNAUTH_REASONS.FILL_PROFILE: {
+      UnauthScreen = (
+        <Stack.Screen
+          name="FillProfile"
+          component={FillProfile}
+          initialParams={{ setUnauthReason }}
+        />
+      )
+      break
+    }
+
+    case UNAUTH_REASONS.INVALID_VERIFICATION_CODE:
+    case UNAUTH_REASONS.VERIFICATION_CODE: {
+      UnauthScreen = (
+        <Stack.Screen
+          name="VerificationCode"
+          component={VerificationCode}
+          initialParams={{ confirmVerificationCode }}
+        />
+      )
+      break
+    }
+
+    case UNAUTH_REASONS.LOGIN:
+    case UNAUTH_REASONS.LOGGED_OUT: {
+      UnauthScreen = (
+        <Stack.Screen name="Login" component={Login} initialParams={{ getVerificationCode }} />
+      )
+      break
+    }
+
+    default: {
+      UnauthScreen = null
+    }
   }
 
   return (
@@ -150,17 +204,7 @@ export default function App() {
         initialRouteName="Home"
         screenOptions={unauthReason ? { headerShown: false } : defaultScreenOptions}>
         {unauthReason ? (
-          <Fragment>
-            {unauthReason === 'Please, now Create a Profile' ? (
-              <Stack.Screen
-                name="FillProfile"
-                component={FillProfile}
-                initialParams={{ setUnauthReason }}
-              />
-            ) : (
-              <Stack.Screen name="Login" component={Login} initialParams={{ setUnauthReason }} />
-            )}
-          </Fragment>
+          UnauthScreen
         ) : (
           <Fragment>
             <Stack.Screen name="Home" options={{ title: 'All Chats' }} component={HomeScreen} />

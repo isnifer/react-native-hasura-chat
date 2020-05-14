@@ -1,31 +1,31 @@
 import { useState } from 'react'
+import { Keyboard } from 'react-native'
 import auth from '@react-native-firebase/auth'
 import { resetGenericPassword } from 'react-native-keychain'
 import { setSyncProfile } from '@/utils/auth/syncProfile'
+import { UNAUTH_REASONS } from '@/constants'
 
 export default function useAuth({ setUnauthReason } = {}) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState()
-
   const [confirm, setConfirm] = useState()
-  const [phone, setPhone] = useState('')
-  const [code, setCode] = useState('')
 
   // Handle the button press
-  async function signInWithPhoneNumber() {
-    if (!code) {
-      const confirmation = await auth().signInWithPhoneNumber(phone)
-      return setConfirm(confirmation)
-    }
+  async function getVerificationCode(phone) {
+    Keyboard.dismiss()
 
-    return confirmCode()
+    const confirmation = await auth().signInWithPhoneNumber(phone)
+    setConfirm(confirmation)
+
+    return setUnauthReason(UNAUTH_REASONS.VERIFICATION_CODE)
   }
 
-  async function confirmCode() {
+  async function confirmVerificationCode(code) {
     try {
       await confirm.confirm(code)
+      setUnauthReason(null)
     } catch (e) {
-      setUnauthReason('Invalid confirmation code')
+      setUnauthReason(UNAUTH_REASONS.INVALID_VERIFICATION_CODE)
     }
   }
 
@@ -45,11 +45,8 @@ export default function useAuth({ setUnauthReason } = {}) {
   return {
     loading,
     error,
-    phone,
-    setPhone,
-    code,
-    setCode,
-    signInWithPhoneNumber,
+    getVerificationCode,
+    confirmVerificationCode,
     logout,
   }
 }

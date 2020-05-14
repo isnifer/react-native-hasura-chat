@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useRef } from 'react'
+import React, { Fragment, useState } from 'react'
 import { View, Text, ImageBackground, SafeAreaView, Animated, StyleSheet } from 'react-native'
 import auth from '@react-native-firebase/auth'
 import { Form, Field } from 'react-final-form'
@@ -6,6 +6,7 @@ import { useMutation, gql } from '@apollo/client'
 import useKeyboardAvoid from '@/hooks/useKeyboardAvoid'
 import { getSyncProfile } from '@/utils/auth/syncProfile'
 import arrayToString from '@/utils/arrayToString'
+import { UNAUTH_REASONS } from '@/constants'
 import colors from '@/constants/colors'
 import { FormInput } from '@/components/Input'
 import Button from '@/components/Button'
@@ -58,12 +59,10 @@ function isRequired(value, allValues, meta) {
   return value ? undefined : `${meta.data?.label ?? 'This Field'} is Required`
 }
 
-// export default function FillProfile({ route }) {
-export default function FillProfile() {
+export default function FillProfile({ route }) {
   const [formHeight, setFormHeight] = useState()
   const [focusedInputPosition, setFocusedInputPosition] = useState(0)
-  // const focusedInputPosition = useRef(0)
-  const { animatedHeight } = useKeyboardAvoid(focusedInputPosition)
+  const { animatedHeight } = useKeyboardAvoid(focusedInputPosition.current)
 
   const { id, phoneNumber: phone } = getSyncProfile()
   const [createProfile] = useMutation(CREATE_PROFILE)
@@ -80,9 +79,9 @@ export default function FillProfile() {
       })
 
       // Switch to Application Screen
-      // route.params.setUnauthReason(null)
+      route.params.setUnauthReason(null)
     } catch (error) {
-      // route.params.setUnauthReason('Please authenticate')
+      route.params.setUnauthReason(UNAUTH_REASONS.LOGIN)
     }
   }
 
@@ -99,7 +98,6 @@ export default function FillProfile() {
   return (
     <ImageBackground source={require('@/assets/img/splash.jpg')} style={styles.backgroundImage}>
       <SafeAreaView style={styles.container}>
-        <View style={{ height: 10, backgroundColor: 'red' }} />
         <Animated.View
           onLayout={handleFormLayout}
           style={[styles.formContainer, { marginBottom: animatedHeight }]}>
@@ -169,27 +167,12 @@ export default function FillProfile() {
   )
 }
 
-// <View style={styles.logoContainer}>
-//   <Text style={styles.logo}>Sophie Chat</Text>
-// </View>
-
 const styles = StyleSheet.create({
   backgroundImage: StyleSheet.absoluteFillObject,
   container: {
     flex: 1,
     flexDirection: 'column',
-    justifyContent: 'space-between',
-  },
-  logoContainer: {
-    // position: 'absolute',
-    // alignItems: 'center',
-    // width: '100%',
-  },
-  logo: {
-    // fontSize: 48,
-    // fontWeight: '700',
-    // color: colors.text,
-    // marginTop: 50,
+    justifyContent: 'flex-end',
   },
   formContainer: {
     backgroundColor: colors.primary,
