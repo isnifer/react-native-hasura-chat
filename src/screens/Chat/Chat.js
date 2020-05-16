@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
   FlatList,
+  ScrollView,
   Animated,
   StyleSheet,
 } from 'react-native'
@@ -127,6 +128,48 @@ export default function Chat({ route }) {
             style={styles.textInput}
           />
         </View>
+        <View style={styles.mediaButtons}>
+          <ScrollView horizontal>
+            <TouchableOpacity activeOpacity={0.9} style={styles.mediaButton} onPress={() => {}}>
+              <View
+                style={[styles.mediaButtonIconContainer, styles.mediaButtonIconContainerGallery]}>
+                <Image source={require('./img/icon_gallery.png')} style={styles.mediaButtonIcon} />
+              </View>
+              <Text style={styles.mediaButtonTitle}>Gallery</Text>
+            </TouchableOpacity>
+            <TouchableOpacity activeOpacity={0.9} style={styles.mediaButton} onPress={() => {}}>
+              <View style={[styles.mediaButtonIconContainer, styles.mediaButtonIconContainerFiles]}>
+                <Image source={require('./img/icon_files.png')} style={styles.mediaButtonIcon} />
+              </View>
+              <Text style={styles.mediaButtonTitle}>Files</Text>
+            </TouchableOpacity>
+            <TouchableOpacity activeOpacity={0.9} style={styles.mediaButton} onPress={() => {}}>
+              <View
+                style={[styles.mediaButtonIconContainer, styles.mediaButtonIconContainerLocation]}>
+                <Image source={require('./img/icon_location.png')} style={styles.mediaButtonIcon} />
+              </View>
+              <Text style={styles.mediaButtonTitle}>Location</Text>
+            </TouchableOpacity>
+            <TouchableOpacity activeOpacity={0.9} style={styles.mediaButton} onPress={() => {}}>
+              <View style={[styles.mediaButtonIconContainer, styles.mediaButtonIconContainerGif]}>
+                <Image source={require('./img/icon_gif.png')} style={styles.mediaButtonIcon} />
+              </View>
+              <Text style={styles.mediaButtonTitle}>GIF</Text>
+            </TouchableOpacity>
+            <TouchableOpacity activeOpacity={0.9} style={styles.mediaButton} onPress={() => {}}>
+              <View style={[styles.mediaButtonIconContainer, styles.mediaButtonIconContainerPlan]}>
+                <Image source={require('./img/icon_plan.png')} style={styles.mediaButtonIcon} />
+              </View>
+              <Text style={styles.mediaButtonTitle}>Plan</Text>
+            </TouchableOpacity>
+            <TouchableOpacity activeOpacity={0.9} style={styles.mediaButton} onPress={() => {}}>
+              <View style={[styles.mediaButtonIconContainer, styles.mediaButtonIconContainerAudio]}>
+                <Image source={require('./img/icon_mic.png')} style={styles.mediaButtonIcon} />
+              </View>
+              <Text style={styles.mediaButtonTitle}>Audio</Text>
+            </TouchableOpacity>
+          </ScrollView>
+        </View>
       </Animated.View>
     </View>
   )
@@ -214,5 +257,48 @@ const styles = StyleSheet.create({
     paddingTop: 13,
     paddingBottom: 10,
     borderRadius: 30,
+  },
+  mediaButtons: {
+    height: 130,
+    backgroundColor: colors.primary,
+    paddingTop: 20,
+    paddingLeft: 5,
+  },
+  mediaButton: {
+    marginLeft: 15,
+  },
+  mediaButtonIconContainer: {
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  mediaButtonIconContainerGallery: {
+    backgroundColor: '#3199FF',
+  },
+  mediaButtonIconContainerFiles: {
+    backgroundColor: '#FF1D62',
+  },
+  mediaButtonIconContainerLocation: {
+    backgroundColor: '#893BFF',
+  },
+  mediaButtonIconContainerGif: {
+    backgroundColor: '#FF7731',
+  },
+  mediaButtonIconContainerPlan: {
+    backgroundColor: '#FFBB00',
+  },
+  mediaButtonIconContainerAudio: {
+    backgroundColor: '#22CFA0',
+  },
+  mediaButtonIcon: {},
+  mediaButtonTitle: {
+    fontSize: 13,
+    lineHeight: 15,
+    fontWeight: '500',
+    color: colors.text,
+    textAlign: 'center',
+    marginTop: 5,
   },
 })

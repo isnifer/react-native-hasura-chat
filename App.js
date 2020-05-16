@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler'
 import React from 'react'
 import { ApolloClient, ApolloProvider, createHttpLink, split, InMemoryCache } from '@apollo/client'
 import { getMainDefinition } from '@apollo/client/utilities'
