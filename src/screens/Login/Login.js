@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Text, ImageBackground, SafeAreaView, StyleSheet } from 'react-native'
+import { View, Text, ImageBackground, StyleSheet } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import colors from '@/constants/colors'
 import Input from '@/components/Input'
@@ -14,7 +14,7 @@ export default function Login({ route }) {
 
   return (
     <ImageBackground source={require('@/assets/img/splash.jpg')} style={styles.backgroundImage}>
-      <SafeAreaView style={styles.root}>
+      <View style={styles.root}>
         <View style={styles.logoContainer}>
           <Text style={styles.logo}>Sophie Chat</Text>
         </View>
@@ -32,7 +32,7 @@ export default function Login({ route }) {
             <Button disabled={!phone} title="Get verification code" onPress={handleSubmit} />
           </View>
         </KeyboardAwareScrollView>
-      </SafeAreaView>
+      </View>
     </ImageBackground>
   )
 }

@@ -10,30 +10,44 @@ import {
   Animated,
   StyleSheet,
 } from 'react-native'
+import ImagePicker from 'react-native-image-crop-picker'
+import storage from '@react-native-firebase/storage'
 import { useSubscription, useMutation, gql } from '@apollo/client'
+import { nanoid } from 'nanoid/non-secure'
 import useKeyboardAvoid from '@/hooks/useKeyboardAvoid'
 import { getSyncProfile } from '@/utils/auth/syncProfile'
 import colors from '@/constants/colors'
 import Spinner from '@/components/Spinner'
 import Spacer from '@/components/Spacer'
+import ModalGiphy from '@/components/ModalGiphy'
 
 const LOAD_MESSAGES = gql`
   subscription LoadMessages($chatId: uuid!) {
     messages: chats_messages(where: { chat_id: { _eq: $chatId } }, order_by: { time: desc }) {
       id
       text
+      time
+      type
       userId: user_id
     }
   }
 `
 
 const SEND_MESSAGE = gql`
-  mutation SendMessage($chatId: uuid!, $userId: String!, $text: String!) {
-    insert_chats_messages(objects: { chat_id: $chatId, user_id: $userId, text: $text }) {
+  mutation SendMessage(
+    $chatId: uuid!
+    $userId: String!
+    $text: String!
+    $type: message_types_enum
+  ) {
+    insert_chats_messages(
+      objects: { chat_id: $chatId, user_id: $userId, text: $text, type: $type }
+    ) {
       returning {
         id
         text
         time
+        type
         chat_id
         user_id
       }
@@ -49,12 +63,41 @@ export default function Chat({ route }) {
   const [sendMessage] = useMutation(SEND_MESSAGE)
   const { animatedHeight } = useKeyboardAvoid()
 
+  const [isModalVisible, setModalVisible] = useState(false)
+  const toggleGIFModal = () => setModalVisible(prevState => !prevState)
+
+  function sendGIF(url) {
+    sendMessage({ variables: { chatId, userId: USER_ID, text: url, type: 'Gif' } })
+    toggleGIFModal()
+  }
+
   function handleAddMessage({ nativeEvent: { text } }) {
     sendMessage({ variables: { chatId, userId: USER_ID, text } })
     setMessage('')
   }
 
   function handlePressPlusButton() {}
+
+  function handlePressGalleryButton() {
+    ImagePicker.openPicker({ multiple: true }).then(async images => {
+      const paths = []
+
+      // eslint-disable-next-line no-unused-vars
+      for (const { filename, path } of images) {
+        const extension = filename.split('.')[1] || '.jpg'
+        const reference = storage().ref(`/chats/${chatId}/${nanoid()}.${extension}`)
+
+        await reference.putFile(path)
+        const imageURL = await reference.getDownloadURL()
+
+        paths.push(imageURL)
+      }
+
+      sendMessage({
+        variables: { chatId, userId: USER_ID, text: paths.join('\n'), type: 'Picture' },
+      })
+    })
+  }
 
   if (loading) {
     return (
@@ -82,24 +125,37 @@ export default function Chat({ route }) {
           data={messages}
           contentContainerStyle={styles.listContent}
           keyExtractor={item => item.id}
-          renderItem={({ item: { text, userId }, index }) => {
+          renderItem={({ item: { text, userId, type }, index }) => {
             const isThisLastMessageInBlock = data.messages[index - 1]?.userId !== userId
 
             const opponentMessageStyles = [
               styles.message,
               isThisLastMessageInBlock && styles.messageLast,
+              (type === 'Picture' || type === 'Gif') && styles.messagePicture,
             ]
             const myMessageStyles = [
               styles.myMessage,
               isThisLastMessageInBlock && styles.myMessageLast,
+              (type === 'Picture' || type === 'Gif') && styles.myMessagePicture,
             ]
 
             return (
               <View>
                 <View style={userId === opponent.id ? opponentMessageStyles : myMessageStyles}>
-                  <Text style={userId === opponent.id ? styles.messageText : styles.myMessageText}>
-                    {text}
-                  </Text>
+                  {type === 'Picture' || type === 'Gif' ? (
+                    <View style={styles.standalonePictureContainer}>
+                      <Image
+                        source={{ uri: text }}
+                        resizeMode="cover"
+                        style={styles.standalonePicture}
+                      />
+                    </View>
+                  ) : (
+                    <Text
+                      style={userId === opponent.id ? styles.messageText : styles.myMessageText}>
+                      {text}
+                    </Text>
+                  )}
                 </View>
                 {isThisLastMessageInBlock && <Spacer small />}
               </View>
@@ -130,7 +186,10 @@ export default function Chat({ route }) {
         </View>
         <View style={styles.mediaButtons}>
           <ScrollView horizontal>
-            <TouchableOpacity activeOpacity={0.9} style={styles.mediaButton} onPress={() => {}}>
+            <TouchableOpacity
+              activeOpacity={0.9}
+              style={styles.mediaButton}
+              onPress={handlePressGalleryButton}>
               <View
                 style={[styles.mediaButtonIconContainer, styles.mediaButtonIconContainerGallery]}>
                 <Image source={require('./img/icon_gallery.png')} style={styles.mediaButtonIcon} />
@@ -150,7 +209,10 @@ export default function Chat({ route }) {
               </View>
               <Text style={styles.mediaButtonTitle}>Location</Text>
             </TouchableOpacity>
-            <TouchableOpacity activeOpacity={0.9} style={styles.mediaButton} onPress={() => {}}>
+            <TouchableOpacity
+              activeOpacity={0.9}
+              style={styles.mediaButton}
+              onPress={toggleGIFModal}>
               <View style={[styles.mediaButtonIconContainer, styles.mediaButtonIconContainerGif]}>
                 <Image source={require('./img/icon_gif.png')} style={styles.mediaButtonIcon} />
               </View>
@@ -171,6 +233,7 @@ export default function Chat({ route }) {
           </ScrollView>
         </View>
       </Animated.View>
+      <ModalGiphy isVisible={isModalVisible} toggle={toggleGIFModal} sendGIF={sendGIF} />
     </View>
   )
 }
@@ -197,6 +260,12 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 30,
     borderBottomLeftRadius: 10,
   },
+  messagePicture: {
+    paddingHorizontal: 0,
+    paddingVertical: 0,
+    borderRadius: 20,
+    backgroundColor: 'transparent',
+  },
   messageLast: {
     borderBottomLeftRadius: 20,
   },
@@ -216,6 +285,12 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10,
     borderBottomLeftRadius: 30,
+  },
+  myMessagePicture: {
+    paddingHorizontal: 0,
+    paddingVertical: 0,
+    borderRadius: 20,
+    backgroundColor: 'transparent',
   },
   myMessageLast: {
     borderBottomRightRadius: 20,
@@ -300,5 +375,17 @@ const styles = StyleSheet.create({
     color: colors.text,
     textAlign: 'center',
     marginTop: 5,
+  },
+  standalonePictureContainer: {
+    width: 300,
+    height: 200,
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  standalonePicture: {
+    width: '100%',
+    height: '100%',
   },
 })

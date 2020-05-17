@@ -63,11 +63,19 @@ export default function ListChats({ navigation, handlePressItem, loading, error,
                     </Text>
                     {opponent.unread && <View style={styles.unreadMarker} />}
                   </View>
-                  <Text
-                    style={[styles.message, opponent.unread && styles.messageUnread]}
-                    numberOfLines={1}>
-                    {lastMessage.text}
-                  </Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    {lastMessage.type === 'Picture' && (
+                      <Image
+                        source={require('@/screens/Chat/img/icon_gallery.png')}
+                        style={styles.inlineImageType}
+                      />
+                    )}
+                    <Text
+                      style={[styles.message, opponent.unread && styles.messageUnread]}
+                      numberOfLines={1}>
+                      {lastMessage.type === 'Picture' ? 'Picture' : lastMessage.text}
+                    </Text>
+                  </View>
                 </View>
                 <View style={styles.statuses}>
                   <Text style={[styles.time, opponent.unread && styles.messageUnread]}>{time}</Text>
@@ -177,5 +185,10 @@ const styles = StyleSheet.create({
   },
   error: {
     color: colors.text,
+  },
+  inlineImageType: {
+    width: 20,
+    height: 16,
+    marginRight: 5,
   },
 })

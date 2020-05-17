@@ -22,6 +22,7 @@ const CHATS = gql`
         messages(order_by: { time: desc }, limit: 1) {
           text
           time
+          type
           userId: user_id
         }
       }
